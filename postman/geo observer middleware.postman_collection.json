@@ -1305,7 +1305,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/token/transfer?sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b&value=541&receiverAddress=0xACF2139DEDEB8255b9A07B2bdaC23C089acb6EB2",
+					"raw": "http://127.0.0.1:8080/gsr/names/exist?name=hub",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -1315,25 +1315,129 @@
 					],
 					"port": "8080",
 					"path": [
-						"token",
-						"transfer"
+						"gsr",
+						"names",
+						"exist"
 					],
 					"query": [
 						{
-							"key": "sender",
-							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b"
-						},
-						{
-							"key": "value",
-							"value": "541"
-						},
-						{
-							"key": "receiverAddress",
-							"value": "0xACF2139DEDEB8255b9A07B2bdaC23C089acb6EB2"
+							"key": "name",
+							"value": "hub"
 						}
 					]
 				},
 				"description": "gsr check existing of name"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr get owner of name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/names/owner?name=hub",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"names",
+						"owner"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "hub"
+						}
+					]
+				},
+				"description": "gsr get owner of name"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr records count",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/names/records/count?name=hub",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"names",
+						"records",
+						"count"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "hub"
+						}
+					]
+				},
+				"description": "gsr records count"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr record",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/names/records/get?name=hub&index=55",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"names",
+						"records",
+						"get"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "hub"
+						},
+						{
+							"key": "index",
+							"value": "55"
+						}
+					]
+				},
+				"description": "gsr record in registry"
 			},
 			"response": []
 		}

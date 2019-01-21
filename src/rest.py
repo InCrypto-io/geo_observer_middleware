@@ -11,6 +11,7 @@ from threading import Thread
 import json
 from hexbytes import HexBytes
 from geo_service_registry import GeoServiceRegistry
+import web3
 
 
 class HexJsonEncoder(json.JSONEncoder):
@@ -588,16 +589,53 @@ class REST:
             return web.Response(status=406)
 
     def gsr_get_owner_of_name(self, request):
-        # , name):
-        pass
+        if "name" not in request.rel_url.query.keys():
+            return web.Response(status=400)
+        try:
+            name = str(request.rel_url.query["name"])
+            text = json.dumps({
+                "name": name,
+                "owner": self.gsr.get_owner_of_name(name)
+            })
+            return web.Response(text=text)
+        except ValueError:
+            return web.Response(status=400)
+        except AssertionError:
+            return web.Response(status=406)
 
     def gsr_get_records_count(self, request):
-        # , name):
-        pass
+        if "name" not in request.rel_url.query.keys():
+            return web.Response(status=400)
+        try:
+            name = str(request.rel_url.query["name"])
+            text = json.dumps({
+                "name": name,
+                "count": self.gsr.get_records_count(name)
+            })
+            return web.Response(text=text)
+        except ValueError:
+            return web.Response(status=400)
+        except AssertionError:
+            return web.Response(status=406)
 
     def gsr_get_raw_record_at(self, request):
-        # , name, index):
-        pass
+        if "name" not in request.rel_url.query.keys():
+            return web.Response(status=400)
+        if "index" not in request.rel_url.query.keys():
+            return web.Response(status=400)
+        try:
+            name = str(request.rel_url.query["name"])
+            index = int(request.rel_url.query["index"])
+            text = json.dumps({
+                "name": name,
+                "index": index,
+                "record": self.gsr.get_raw_record_at(name, index).hex()
+            })
+            return web.Response(text=text)
+        except (ValueError, web3.exceptions.ValidationError, web3.exceptions.BadFunctionCallOutput):
+            return web.Response(status=400)
+        except AssertionError:
+            return web.Response(status=406)
 
     def process_events(self):
         while self.allow_process_events:
