@@ -1,0 +1,6 @@
+web3
+base58
+pbkdf2==1.3
+two1
+pymongo
+aiohttp

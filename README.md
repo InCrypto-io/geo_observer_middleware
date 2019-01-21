@@ -1,1 +1,0 @@
-# geo_observer_middleware

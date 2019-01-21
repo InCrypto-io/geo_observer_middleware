@@ -1,0 +1,1299 @@
+{
+	"info": {
+		"_postman_id": "81edca1d-b872-40a5-a23b-69dfa6eef1ad",
+		"name": "geo_gsr",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "first blcock",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/blocks/firstBlock",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"blocks",
+						"firstBlock"
+					]
+				},
+				"description": "get first process block number"
+			},
+			"response": []
+		},
+		{
+			"name": "current blcok",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/blocks/currentBlock",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"blocks",
+						"currentBlock"
+					]
+				},
+				"description": "get last process block number"
+			},
+			"response": []
+		},
+		{
+			"name": "registries list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/registries/list?blockNumber=3705866",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"registries",
+						"list"
+					],
+					"query": [
+						{
+							"key": "blockNumber",
+							"value": "3705866"
+						}
+					]
+				},
+				"description": "get registries list for chosen block number"
+			},
+			"response": []
+		},
+		{
+			"name": "registry exist",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/registries/exist?registryName=provider&blockNumber=3705866",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"registries",
+						"exist"
+					],
+					"query": [
+						{
+							"key": "registryName",
+							"value": "provider"
+						},
+						{
+							"key": "blockNumber",
+							"value": "3705866"
+						}
+					]
+				},
+				"description": "check registry existfor chosen block number"
+			},
+			"response": []
+		},
+		{
+			"name": "get winners list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/votes/list?registryName=hub&blockNumber=3705866",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"votes",
+						"list"
+					],
+					"query": [
+						{
+							"key": "registryName",
+							"value": "hub"
+						},
+						{
+							"key": "blockNumber",
+							"value": "3705866"
+						}
+					]
+				},
+				"description": "get sorted winners list for chosen block number and registry"
+			},
+			"response": []
+		},
+		{
+			"name": "get weight",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/weight?address=0x9a7107975BD53B63c792569aC0A10E6626cBb56A&blockNumber=3705866",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"weight"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "0x9a7107975BD53B63c792569aC0A10E6626cBb56A"
+						},
+						{
+							"key": "blockNumber",
+							"value": "3705866"
+						}
+					]
+				},
+				"description": "get weight for chosen block number"
+			},
+			"response": []
+		},
+		{
+			"name": "get total votes for one candidate",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/votes/candidate?address=0x4C13C13d7a66Ef1b02A968910B3848adb2f1DdB2&registryName=hub&blockNumber=3701970",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"votes",
+						"candidate"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "0x4C13C13d7a66Ef1b02A968910B3848adb2f1DdB2"
+						},
+						{
+							"key": "registryName",
+							"value": "hub"
+						},
+						{
+							"key": "blockNumber",
+							"value": "3701970"
+						}
+					]
+				},
+				"description": "get amount of vote for one candidate for chosen block number and registry"
+			},
+			"response": []
+		},
+		{
+			"name": "get gas price",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/eth/gasPrice",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"eth",
+						"gasPrice"
+					]
+				},
+				"description": "get current gas price from node etherium"
+			},
+			"response": []
+		},
+		{
+			"name": "get accounts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/eth/accounts",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"eth",
+						"accounts"
+					]
+				},
+				"description": "get addresses for mnemonic from config"
+			},
+			"response": []
+		},
+		{
+			"name": "get transaction info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/eth/transaction_info?hash=0x6e580135eef0c6d256f27c7a2c4547cf3065762842dcc27f8b5647d88f7c3b5c",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"eth",
+						"transaction_info"
+					],
+					"query": [
+						{
+							"key": "hash",
+							"value": "0x6e580135eef0c6d256f27c7a2c4547cf3065762842dcc27f8b5647d88f7c3b5c"
+						}
+					]
+				},
+				"description": "get transaction info, if have block number, then transaction is mined"
+			},
+			"response": []
+		},
+		{
+			"name": "resend",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/eth/resend?hash=0x6dabd0d9152cd8f8c5aed7fa7d9f3f9a63ff562ef8d93824839d7d44436441ef&gasPrice=5151515151515",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"eth",
+						"resend"
+					],
+					"query": [
+						{
+							"key": "hash",
+							"value": "0x6dabd0d9152cd8f8c5aed7fa7d9f3f9a63ff562ef8d93824839d7d44436441ef"
+						},
+						{
+							"key": "gasPrice",
+							"value": "5151515151515",
+							"description": "by default is current from network"
+						}
+					]
+				},
+				"description": "resend with other gas price"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr registry exist",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/registry/exist?registryName=provider",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"registry",
+						"exist"
+					],
+					"query": [
+						{
+							"key": "registryName",
+							"value": "provider"
+						}
+					]
+				},
+				"description": "gsr method, check registry exist"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr vote for new registry",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/registry/vote?registryName=provider&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"registry",
+						"vote"
+					],
+					"query": [
+						{
+							"key": "registryName",
+							"value": "provider"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+							"description": "by default it first address from mnemonic"
+						}
+					]
+				},
+				"description": "gsr vote for new registry, after lockup period"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr vote for new registry Lockup",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/lockupPeriod/registry/vote?registryName=providerdfgdf&sender=0x1F2D5B4F89f4e613158D77BAf2B00f5645687b79",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"lockupPeriod",
+						"registry",
+						"vote"
+					],
+					"query": [
+						{
+							"key": "registryName",
+							"value": "providerdfgdf"
+						},
+						{
+							"key": "sender",
+							"value": "0x1F2D5B4F89f4e613158D77BAf2B00f5645687b79",
+							"description": "by default it first address from mnemonic"
+						}
+					]
+				},
+				"description": "gsr vote for new registry, in lockup period"
+			},
+			"response": []
+		},
+		{
+			"name": "gst make deposit",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/weight/makeDeposit?additionAmount=119&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"weight",
+						"makeDeposit"
+					],
+					"query": [
+						{
+							"key": "additionAmount",
+							"value": "119"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+							"description": "by default it first address from mnemonic"
+						}
+					]
+				},
+				"description": "make deposit, after lockup period"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr set weight",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/lockupPeriod/weight/set?newAmount=777&sender=0x1F2D5B4F89f4e613158D77BAf2B00f5645687b79",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"lockupPeriod",
+						"weight",
+						"set"
+					],
+					"query": [
+						{
+							"key": "newAmount",
+							"value": "777"
+						},
+						{
+							"key": "sender",
+							"value": "0x1F2D5B4F89f4e613158D77BAf2B00f5645687b79",
+							"description": "by default it first address from mnemonic"
+						}
+					]
+				},
+				"description": "gsr set weight, in lockup period"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr withdraw",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/weight/withdraw?amount=1&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"weight",
+						"withdraw"
+					],
+					"query": [
+						{
+							"key": "amount",
+							"value": "1"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+							"description": "by default it first address from mnemonic"
+						}
+					]
+				},
+				"description": "withdraw, after lockup period"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr deposit size",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/weight/size?address=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"weight",
+						"size"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b"
+						}
+					]
+				},
+				"description": "get deposit size"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr vote",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "registryName",
+							"value": "provider",
+							"type": "text"
+						},
+						{
+							"key": "list",
+							"value": "{\n\t\"0x47E6b00eD2DC8115728e48dAF34d8C8C34669e81\": \"4000\",\n\t\"0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b\": \"6000\"\n}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/lockupPeriod/vote",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"lockupPeriod",
+						"vote"
+					]
+				},
+				"description": "gsr vote, max 20 candidates\ncandidates in JSON array \n\n{\n\t\"0x47E6b00eD2DC8115728e48dAF34d8C8C34669e81\": \"4000\",\n\t\"0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b\": \"6000\"\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr vote Lockup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "registryName",
+							"value": "provider",
+							"type": "text"
+						},
+						{
+							"key": "list",
+							"value": "{\n\t\"0x47E6b00eD2DC8115728e48dAF34d8C8C34669e81\": \"4500\",\n\t\"0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b\": \"5500\"\n}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/lockupPeriod/vote",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"lockupPeriod",
+						"vote"
+					]
+				},
+				"description": "gsr vote, max 20 candidates, in lockup period\ncandidates in JSON array \n\n{\n\t\"0x47E6b00eD2DC8115728e48dAF34d8C8C34669e81\": \"4000\",\n\t\"0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b\": \"6000\"\n}"
+			},
+			"response": []
+		},
+		{
+			"name": "token allow transfer in lockup period",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/lockupPeriod/allow?address=0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"lockupPeriod",
+						"allow"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+							"description": "by default it first address from mnemonic"
+						}
+					]
+				},
+				"description": "token allow to addres transfer in lockup period, can use only owner"
+			},
+			"response": []
+		},
+		{
+			"name": "token deny transfer in lockup period",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/lockupPeriod/deny?address=0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"lockupPeriod",
+						"deny"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+							"description": "by default it first address from mnemonic"
+						}
+					]
+				},
+				"description": "token deny to addres transfer in lockup period, can use only owner"
+			},
+			"response": []
+		},
+		{
+			"name": "token lockup is expired",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/lockupPeriod/expired?address=0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"lockupPeriod",
+						"expired"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6"
+						}
+					]
+				},
+				"description": "token deny to addres transfer in lockup period, can use only owner"
+			},
+			"response": []
+		},
+		{
+			"name": "token individual lockup time",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/lockupPeriod/set?sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b&address=0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6&time=234234222",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"lockupPeriod",
+						"set"
+					],
+					"query": [
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+							"description": "by default it first address from mnemonic"
+						},
+						{
+							"key": "address",
+							"value": "0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6"
+						},
+						{
+							"key": "time",
+							"value": "234234222"
+						}
+					]
+				},
+				"description": "token individual lockup time, can use only owner"
+			},
+			"response": []
+		},
+		{
+			"name": "token allowance",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/allowance?ownerAddress=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b&spenderAddress=0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"allowance"
+					],
+					"query": [
+						{
+							"key": "ownerAddress",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+							"description": "by default it first address from mnemonic"
+						},
+						{
+							"key": "spenderAddress",
+							"value": "0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b"
+						}
+					]
+				},
+				"description": "token get allowance for spender"
+			},
+			"response": []
+		},
+		{
+			"name": "token decrease allowance",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/allowance/decrease?spenderAddress=0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6&subtractedValue=541&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"allowance",
+						"decrease"
+					],
+					"query": [
+						{
+							"key": "spenderAddress",
+							"value": "0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6"
+						},
+						{
+							"key": "subtractedValue",
+							"value": "541"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b"
+						}
+					]
+				},
+				"description": "token decrease allowance"
+			},
+			"response": []
+		},
+		{
+			"name": "token increase allowance",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/allowance/increase?spenderAddress=0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6&addedValue=541&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"allowance",
+						"increase"
+					],
+					"query": [
+						{
+							"key": "spenderAddress",
+							"value": "0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6"
+						},
+						{
+							"key": "addedValue",
+							"value": "541"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b"
+						}
+					]
+				},
+				"description": "token increase allowance"
+			},
+			"response": []
+		},
+		{
+			"name": "token approve",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/approve?spenderAddress=0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6&value=541&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"approve"
+					],
+					"query": [
+						{
+							"key": "spenderAddress",
+							"value": "0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6"
+						},
+						{
+							"key": "value",
+							"value": "541"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b"
+						}
+					]
+				},
+				"description": "token approve"
+			},
+			"response": []
+		},
+		{
+			"name": "token balance",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/balance?address=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"balance"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b"
+						}
+					]
+				},
+				"description": "get blance of address"
+			},
+			"response": []
+		},
+		{
+			"name": "token burn",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/burn?address=0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6&value=541&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"burn"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6"
+						},
+						{
+							"key": "value",
+							"value": "541"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b"
+						}
+					]
+				},
+				"description": "token burn"
+			},
+			"response": []
+		},
+		{
+			"name": "token mint",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/mint?address=0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6&value=541&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"mint"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6"
+						},
+						{
+							"key": "value",
+							"value": "541"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b"
+						}
+					]
+				},
+				"description": "token mint"
+			},
+			"response": []
+		},
+		{
+			"name": "token total suply",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/totalSupply",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"totalSupply"
+					]
+				},
+				"description": "token total suply"
+			},
+			"response": []
+		},
+		{
+			"name": "token transfer from",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/transferFrom?sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b&value=541&receiverAddress=0xACF2139DEDEB8255b9A07B2bdaC23C089acb6EB2&transferFromAddress=0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"transferFrom"
+					],
+					"query": [
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b"
+						},
+						{
+							"key": "value",
+							"value": "541"
+						},
+						{
+							"key": "receiverAddress",
+							"value": "0xACF2139DEDEB8255b9A07B2bdaC23C089acb6EB2"
+						},
+						{
+							"key": "transferFromAddress",
+							"value": "0x7F16c260fEc7536aCff5D943A381C2bc93f0aEc6"
+						}
+					]
+				},
+				"description": "token transfer from"
+			},
+			"response": []
+		},
+		{
+			"name": "token transfer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/transfer?sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b&value=541&receiverAddress=0xACF2139DEDEB8255b9A07B2bdaC23C089acb6EB2",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"transfer"
+					],
+					"query": [
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b"
+						},
+						{
+							"key": "value",
+							"value": "541"
+						},
+						{
+							"key": "receiverAddress",
+							"value": "0xACF2139DEDEB8255b9A07B2bdaC23C089acb6EB2"
+						}
+					]
+				},
+				"description": "token transfer"
+			},
+			"response": []
+		}
+	]
+}

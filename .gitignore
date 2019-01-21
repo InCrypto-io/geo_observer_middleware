@@ -1,0 +1,7 @@
+node_modules/
+build/
+dist/
+.idea/
+.env
+*.pyc
+/src/config.py
