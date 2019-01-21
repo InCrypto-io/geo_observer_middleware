@@ -3,10 +3,10 @@ from pymongo import MongoClient
 
 
 class RegistriesCache:
-    def __init__(self, event_cache, gsr_created_at_block, db_url, interval_for_preprocessed_blocks, settings,
+    def __init__(self, event_cache, voting_created_at_block, db_url, interval_for_preprocessed_blocks, settings,
                  votes_round_to_number_of_digit):
         self.event_cache = event_cache
-        self.gsr_created_at_block = gsr_created_at_block
+        self.voting_created_at_block = voting_created_at_block
         self.settings = settings
         self.votes_round_to_number_of_digit = votes_round_to_number_of_digit
 
@@ -18,7 +18,7 @@ class RegistriesCache:
 
     def update(self):
         last_processed_block_number = self.__get_last_preprocessed_block_number()
-        if self.event_cache.get_last_processed_block_number() < self.gsr_created_at_block:
+        if self.event_cache.get_last_processed_block_number() < self.voting_created_at_block:
             return
         while last_processed_block_number + self.interval_for_preprocessed_blocks \
                 < self.event_cache.get_last_processed_block_number():
@@ -28,7 +28,7 @@ class RegistriesCache:
 
     def update_current_block(self):
         current_preprocessed_block_number = self.get_current_preprocessed_block_number()
-        if self.event_cache.get_last_processed_block_number() < self.gsr_created_at_block:
+        if self.event_cache.get_last_processed_block_number() < self.voting_created_at_block:
             return
         if self.event_cache.get_last_processed_block_number() < \
                 self.__get_last_preprocessed_block_number() + self.interval_for_preprocessed_blocks:
@@ -43,7 +43,7 @@ class RegistriesCache:
 
     def __preprocess_block(self, block_number, save_to_db=True):
         print("__preprocess_block", block_number)
-        assert block_number >= self.gsr_created_at_block
+        assert block_number >= self.voting_created_at_block
 
         previous_block = self.__determine_previous_preprocessed_block(block_number)
 
@@ -56,7 +56,7 @@ class RegistriesCache:
         # reg name -> sorted array -> [candidate, total tokens]
         winners = {}
 
-        if previous_block > self.gsr_created_at_block:
+        if previous_block > self.voting_created_at_block:
             self.__load_from_db(votes, weights, registries, winners, previous_block)
 
         winners = {}
@@ -192,7 +192,7 @@ class RegistriesCache:
 
     def erase(self, block_number=0):
         if block_number == 0:
-            block_number = self.gsr_created_at_block
+            block_number = self.voting_created_at_block
         if block_number > self.__get_last_preprocessed_block_number():
             return
 
@@ -247,20 +247,20 @@ class RegistriesCache:
         return 0
 
     def __determine_previous_preprocessed_block(self, block_number):
-        previous_block = self.gsr_created_at_block
-        if block_number >= self.gsr_created_at_block + self.interval_for_preprocessed_blocks + 1:
-            previous_block = (((block_number - self.gsr_created_at_block) // self.interval_for_preprocessed_blocks - 1)
+        previous_block = self.voting_created_at_block
+        if block_number >= self.voting_created_at_block + self.interval_for_preprocessed_blocks + 1:
+            previous_block = (((block_number - self.voting_created_at_block) // self.interval_for_preprocessed_blocks - 1)
                               * self.interval_for_preprocessed_blocks) \
-                             + self.gsr_created_at_block
+                             + self.voting_created_at_block
         return previous_block
 
     def __determine_is_preprocessed_block(self, block_number):
-        return ((block_number - self.gsr_created_at_block) % self.interval_for_preprocessed_blocks) == 0
+        return ((block_number - self.voting_created_at_block) % self.interval_for_preprocessed_blocks) == 0
 
     def __get_last_preprocessed_block_number(self):
         result = self.settings.get_value("last_preprocessed_block_number")
         if not result:
-            result = self.gsr_created_at_block
+            result = self.voting_created_at_block
         return result
 
     def __set_last_preprocessed_block_number(self, value):

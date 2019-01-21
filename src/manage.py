@@ -6,7 +6,7 @@ import sys
 from eth_connection import EthConnection
 from events_cache import EventCache
 from registries_cache import RegistriesCache
-from geo_service_registry import GeoServiceRegistry
+from geo_service_registry import Voting
 from settings import Settings
 
 if __name__ == "__main__":
@@ -21,15 +21,15 @@ if __name__ == "__main__":
     elif "CLEAR" in sys.argv:
         eth_connection = EthConnection(config.WEB3_PROVIDER, config.MNEMONIC, config.DB_URL)
         settings = Settings(config.DB_URL)
-        gsr = GeoServiceRegistry(eth_connection, config.GEOSERVICEREGISTRY_ADDRESS)
+        voting = Voting(eth_connection, config.VOTING_ADDRESS)
         event_cache = EventCache(
             eth_connection,
-            gsr,
-            config.GEOSERVICEREGISTRY_CREATED_AT_BLOCK,
+            voting,
+            config.VOTING_CREATED_AT_BLOCK,
             config.DB_URL,
             config.CONFIRMATION_COUNT,
             settings)
-        registries_cache = RegistriesCache(event_cache, config.GEOSERVICEREGISTRY_CREATED_AT_BLOCK, config.DB_URL,
+        registries_cache = RegistriesCache(event_cache, config.VOTING_CREATED_AT_BLOCK, config.DB_URL,
                                            config.INTERVAL_FOR_PREPROCESSED_BLOCKS, settings,
                                            config.VOTES_ROUND_TO_NUMBER_OF_DIGIT)
         event_cache.erase_all(0)

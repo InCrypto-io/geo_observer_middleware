@@ -6,7 +6,7 @@ services:
     ports:
       - '27017:27017'
 
-  gsr:
+  voting:
     build: .
     command: python3 ./src/manage.py
     ports:

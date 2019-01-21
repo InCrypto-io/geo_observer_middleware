@@ -6,9 +6,9 @@ import concurrent.futures
 
 
 class EventCache:
-    def __init__(self, connection, gsr, gsr_created_at_block, db_url, confirmation_count, settings):
+    def __init__(self, connection, voting, voting_created_at_block, db_url, confirmation_count, settings):
         self.connection = connection
-        self.gsr = gsr
+        self.voting = voting
         self.confirmation_count = confirmation_count
         self.client = MongoClient(db_url)
         self.db = self.client['db_geo_events']
@@ -20,7 +20,7 @@ class EventCache:
         ], unique=True)
         self.stop_collect_events = True
         self.settings = settings
-        self.gsr_created_at_block = gsr_created_at_block
+        self.voting_created_at_block = voting_created_at_block
 
     def collect(self):
         self.stop_collect_events = False
@@ -36,8 +36,8 @@ class EventCache:
                     print("exist new block", last_block_number)
                     while self.get_last_processed_block_number() + self.confirmation_count < last_block_number:
                         print("get events for block:", self.get_last_processed_block_number() + 1)
-                        for event_name in self.gsr.get_events_list():
-                            event_filter = self.gsr.contract.eventFilter(event_name,
+                        for event_name in self.voting.get_events_list():
+                            event_filter = self.voting.contract.eventFilter(event_name,
                                                                          {'fromBlock': self.get_last_processed_block_number() + 1,
                                                                           'toBlock': self.get_last_processed_block_number() + 1})
                             for event in event_filter.get_all_entries():
@@ -102,7 +102,7 @@ class EventCache:
     def get_last_processed_block_number(self):
         result = self.settings.get_value("last_processed_in_block_number_for_event")
         if not result:
-            result = self.gsr_created_at_block - 1
+            result = self.voting_created_at_block - 1
         return result
 
     def set_last_processed_block_number(self, value):

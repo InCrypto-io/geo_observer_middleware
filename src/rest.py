@@ -1,7 +1,7 @@
 from aiohttp import web
 import config
 from eth_connection import EthConnection
-from geo_service_registry import GeoServiceRegistry
+from geo_service_registry import Voting
 from geo_token import GEOToken
 from events_cache import EventCache
 import time
@@ -23,20 +23,20 @@ class REST:
     def __init__(self):
         self.eth_connection = EthConnection(config.WEB3_PROVIDER, config.MNEMONIC, config.DB_URL)
 
-        self.gsr = GeoServiceRegistry(self.eth_connection, config.GEOSERVICEREGISTRY_ADDRESS)
+        self.voting = Voting(self.eth_connection, config.VOTING_ADDRESS)
         self.geo = GEOToken(self.eth_connection, config.GEOTOKEN_ADDRESS)
 
         settings = Settings(config.DB_URL)
 
         self.event_cache = EventCache(
             self.eth_connection,
-            self.gsr,
-            config.GEOSERVICEREGISTRY_CREATED_AT_BLOCK,
+            self.voting,
+            config.VOTING_CREATED_AT_BLOCK,
             config.DB_URL,
             config.CONFIRMATION_COUNT,
             settings)
 
-        self.registries_cache = RegistriesCache(self.event_cache, config.GEOSERVICEREGISTRY_CREATED_AT_BLOCK,
+        self.registries_cache = RegistriesCache(self.event_cache, config.VOTING_CREATED_AT_BLOCK,
                                                 config.DB_URL,
                                                 config.INTERVAL_FOR_PREPROCESSED_BLOCKS, settings,
                                                 config.VOTES_ROUND_TO_NUMBER_OF_DIGIT)
@@ -44,7 +44,7 @@ class REST:
         self.allow_process_events = False
 
     def get_first_block_number(self, request):
-        text = str(config.GEOSERVICEREGISTRY_CREATED_AT_BLOCK)
+        text = str(config.VOTING_CREATED_AT_BLOCK)
         return web.Response(text=text)
 
     def get_current_block_number(self, request):
@@ -56,7 +56,7 @@ class REST:
             return web.Response(status=400)
         try:
             block_number = int(request.rel_url.query["blockNumber"])
-            if block_number < config.GEOSERVICEREGISTRY_CREATED_AT_BLOCK \
+            if block_number < config.VOTING_CREATED_AT_BLOCK \
                     or block_number > self.registries_cache.get_current_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
@@ -75,7 +75,7 @@ class REST:
         try:
             registry_name = str(request.rel_url.query["registryName"])
             block_number = int(request.rel_url.query["blockNumber"])
-            if block_number < config.GEOSERVICEREGISTRY_CREATED_AT_BLOCK \
+            if block_number < config.VOTING_CREATED_AT_BLOCK \
                     or block_number > self.registries_cache.get_current_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
@@ -95,7 +95,7 @@ class REST:
         try:
             registry_name = str(request.rel_url.query["registryName"])
             block_number = int(request.rel_url.query["blockNumber"])
-            if block_number < config.GEOSERVICEREGISTRY_CREATED_AT_BLOCK \
+            if block_number < config.VOTING_CREATED_AT_BLOCK \
                     or block_number > self.registries_cache.get_current_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
@@ -118,7 +118,7 @@ class REST:
             address = str(request.rel_url.query["address"])
             registry_name = str(request.rel_url.query["registryName"])
             block_number = int(request.rel_url.query["blockNumber"])
-            if block_number < config.GEOSERVICEREGISTRY_CREATED_AT_BLOCK \
+            if block_number < config.VOTING_CREATED_AT_BLOCK \
                     or block_number > self.registries_cache.get_current_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
@@ -139,7 +139,7 @@ class REST:
         try:
             address = str(request.rel_url.query["address"])
             block_number = int(request.rel_url.query["blockNumber"])
-            if block_number < config.GEOSERVICEREGISTRY_CREATED_AT_BLOCK \
+            if block_number < config.VOTING_CREATED_AT_BLOCK \
                     or block_number > self.registries_cache.get_current_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
@@ -197,35 +197,35 @@ class REST:
             self.registries_cache.update_current_block()
             time.sleep(1)
 
-    def gsr_withdraw(self, request):
+    def voting_withdraw(self, request):
         if "amount" not in request.rel_url.query.keys():
             return web.Response(status=400)
         try:
             if "sender" in request.rel_url.query.keys():
-                self.gsr.set_sender(str(request.rel_url.query["sender"]))
+                self.voting.set_sender(str(request.rel_url.query["sender"]))
             amount = int(request.rel_url.query["amount"])
-            text = str(self.gsr.withdraw(amount).hex())
+            text = str(self.voting.withdraw(amount).hex())
             return web.Response(text=text)
         except ValueError:
             return web.Response(status=400)
         except AssertionError:
             return web.Response(status=406)
 
-    def gsr_vote_service_lockup_for_new_registry(self, request):
+    def voting_vote_service_lockup_for_new_registry(self, request):
         if "registryName" not in request.rel_url.query.keys():
             return web.Response(status=400)
         try:
             if "sender" in request.rel_url.query.keys():
-                self.gsr.set_sender(str(request.rel_url.query["sender"]))
+                self.voting.set_sender(str(request.rel_url.query["sender"]))
             registry_name = str(request.rel_url.query["registryName"])
-            text = str(self.gsr.vote_service_lockup_for_new_registry(registry_name).hex())
+            text = str(self.voting.vote_service_lockup_for_new_registry(registry_name).hex())
             return web.Response(text=text)
         except ValueError:
             return web.Response(status=400)
         except AssertionError:
             return web.Response(status=406)
 
-    async def gsr_vote_service_lockup(self, request):
+    async def voting_vote_service_lockup(self, request):
         data = await request.post()
         if "registryName" not in data.keys():
             return web.Response(status=400)
@@ -233,7 +233,7 @@ class REST:
             return web.Response(status=400)
         try:
             if "sender" in data.keys():
-                self.gsr.set_sender(str(data["sender"]))
+                self.voting.set_sender(str(data["sender"]))
             registry_name = str(data["registryName"])
             candidates = []
             amounts = []
@@ -241,28 +241,28 @@ class REST:
             for key in array.keys():
                 candidates.append(key)
                 amounts.append(int(array[key]))
-            text = str(self.gsr.vote_service_lockup(registry_name, candidates, amounts).hex())
+            text = str(self.voting.vote_service_lockup(registry_name, candidates, amounts).hex())
             return web.Response(text=text)
         except ValueError:
             return web.Response(status=400)
         except AssertionError:
             return web.Response(status=406)
 
-    def gsr_vote_service_for_new_registry(self, request):
+    def voting_vote_service_for_new_registry(self, request):
         if "registryName" not in request.rel_url.query.keys():
             return web.Response(status=400)
         try:
             if "sender" in request.rel_url.query.keys():
-                self.gsr.set_sender(str(request.rel_url.query["sender"]))
+                self.voting.set_sender(str(request.rel_url.query["sender"]))
             registry_name = str(request.rel_url.query["registryName"])
-            text = str(self.gsr.vote_service_for_new_registry(registry_name).hex())
+            text = str(self.voting.vote_service_for_new_registry(registry_name).hex())
             return web.Response(text=text)
         except ValueError:
             return web.Response(status=400)
         except AssertionError:
             return web.Response(status=406)
 
-    async def gsr_vote_service(self, request):
+    async def voting_vote_service(self, request):
         data = await request.post()
         if "registryName" not in data.keys():
             return web.Response(status=400)
@@ -270,7 +270,7 @@ class REST:
             return web.Response(status=400)
         try:
             if "sender" in data.keys():
-                self.gsr.set_sender(str(data["sender"]))
+                self.voting.set_sender(str(data["sender"]))
             registry_name = str(data["registryName"])
             candidates = []
             amounts = []
@@ -278,49 +278,49 @@ class REST:
             for key in array.keys():
                 candidates.append(key)
                 amounts.append(int(array[key]))
-            text = str(self.gsr.vote_service(registry_name, candidates, amounts).hex())
+            text = str(self.voting.vote_service(registry_name, candidates, amounts).hex())
             return web.Response(text=text)
         except ValueError:
             return web.Response(status=400)
         except AssertionError:
             return web.Response(status=406)
 
-    def gsr_set_vote_weight_in_lockup_period(self, request):
+    def voting_set_vote_weight_in_lockup_period(self, request):
         if "newAmount" not in request.rel_url.query.keys():
             return web.Response(status=400)
         try:
             if "sender" in request.rel_url.query.keys():
-                self.gsr.set_sender(str(request.rel_url.query["sender"]))
+                self.voting.set_sender(str(request.rel_url.query["sender"]))
             new_amount = int(request.rel_url.query["newAmount"])
-            text = str(self.gsr.set_vote_weight_in_lockup_period(new_amount).hex())
+            text = str(self.voting.set_vote_weight_in_lockup_period(new_amount).hex())
             return web.Response(text=text)
         except ValueError:
             return web.Response(status=400)
         except AssertionError:
             return web.Response(status=406)
 
-    def gsr_make_deposit(self, request):
+    def voting_make_deposit(self, request):
         if "additionAmount" not in request.rel_url.query.keys():
             return web.Response(status=400)
         try:
             if "sender" in request.rel_url.query.keys():
-                self.gsr.set_sender(str(request.rel_url.query["sender"]))
+                self.voting.set_sender(str(request.rel_url.query["sender"]))
             addition_amount = int(request.rel_url.query["additionAmount"])
-            text = str(self.gsr.make_deposit(addition_amount).hex())
+            text = str(self.voting.make_deposit(addition_amount).hex())
             return web.Response(text=text)
         except ValueError:
             return web.Response(status=400)
         except AssertionError:
             return web.Response(status=406)
 
-    def gsr_is_registry_exist(self, request):
+    def voting_is_registry_exist(self, request):
         if "registryName" not in request.rel_url.query.keys():
             return web.Response(status=400)
         try:
             registry_name = str(request.rel_url.query["registryName"])
             text = json.dumps({
                 "registry": registry_name,
-                "exist": self.gsr.is_registry_exist(registry_name)
+                "exist": self.voting.is_registry_exist(registry_name)
             })
             return web.Response(text=text)
         except ValueError:
@@ -328,14 +328,14 @@ class REST:
         except AssertionError:
             return web.Response(status=406)
 
-    def gsr_deposit(self, request):
+    def voting_deposit(self, request):
         if "address" not in request.rel_url.query.keys():
             return web.Response(status=400)
         try:
             address = str(request.rel_url.query["address"])
             text = json.dumps({
                 "address": address,
-                "deposit": self.gsr.deposit(address)
+                "deposit": self.voting.deposit(address)
             })
             return web.Response(text=text)
         except ValueError:
@@ -586,15 +586,15 @@ class REST:
                         web.get('/eth/transaction_info', self.get_transaction_info),
                         web.get('/eth/resend', self.resend),
 
-                        web.get('/gsr/registry/exist', self.gsr_is_registry_exist),
-                        web.get('/gsr/registry/vote', self.gsr_vote_service_for_new_registry),
-                        web.post('/gsr/vote', self.gsr_vote_service),
-                        web.post('/gsr/lockupPeriod/vote', self.gsr_vote_service_lockup),
-                        web.get('/gsr/lockupPeriod/registry/vote', self.gsr_vote_service_lockup_for_new_registry),
-                        web.get('/gsr/lockupPeriod/weight/set', self.gsr_set_vote_weight_in_lockup_period),
-                        web.get('/gsr/weight/makeDeposit', self.gsr_make_deposit),
-                        web.get('/gsr/weight/withdraw', self.gsr_withdraw),
-                        web.get('/gsr/weight/size', self.gsr_deposit),
+                        web.get('/voting/registry/exist', self.voting_is_registry_exist),
+                        web.get('/voting/registry/vote', self.voting_vote_service_for_new_registry),
+                        web.post('/voting/vote', self.voting_vote_service),
+                        web.post('/voting/lockupPeriod/vote', self.voting_vote_service_lockup),
+                        web.get('/voting/lockupPeriod/registry/vote', self.voting_vote_service_lockup_for_new_registry),
+                        web.get('/voting/lockupPeriod/weight/set', self.voting_set_vote_weight_in_lockup_period),
+                        web.get('/voting/weight/makeDeposit', self.voting_make_deposit),
+                        web.get('/voting/weight/withdraw', self.voting_withdraw),
+                        web.get('/voting/weight/size', self.voting_deposit),
 
                         web.get('/token/lockupPeriod/allow', self.token_allow_transfer_in_lockup_period),
                         web.get('/token/lockupPeriod/deny', self.token_deny_transfer_in_lockup_period),

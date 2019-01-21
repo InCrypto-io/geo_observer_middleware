@@ -1,12 +1,12 @@
 import json
 
 
-class GeoServiceRegistry:
+class Voting:
 
     def __init__(self, connection, address):
         self.connection = connection
 
-        interface_file = open("./abi/GeoServiceRegistry.json", "r")
+        interface_file = open("./abi/Voting.json", "r")
         contract_interface = json.load(interface_file)
         interface_file.close()
 
