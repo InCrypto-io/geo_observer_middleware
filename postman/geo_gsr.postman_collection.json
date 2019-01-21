@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "81edca1d-b872-40a5-a23b-69dfa6eef1ad",
-		"name": "geo_gsr",
+		"name": "geo observer middleware",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -34,7 +34,7 @@
 			"response": []
 		},
 		{
-			"name": "current blcok",
+			"name": "current block",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -129,7 +129,7 @@
 						}
 					]
 				},
-				"description": "check registry existfor chosen block number"
+				"description": "check registry exist for chosen block number"
 			},
 			"response": []
 		},
@@ -380,7 +380,7 @@
 			"response": []
 		},
 		{
-			"name": "gsr registry exist",
+			"name": "voting registry exist",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -389,7 +389,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/gsr/registry/exist?registryName=provider",
+					"raw": "http://127.0.0.1:8080/voting/registry/exist?registryName=provider",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -399,7 +399,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"gsr",
+						"voting",
 						"registry",
 						"exist"
 					],
@@ -410,12 +410,12 @@
 						}
 					]
 				},
-				"description": "gsr method, check registry exist"
+				"description": "voting method, check registry exist"
 			},
 			"response": []
 		},
 		{
-			"name": "gsr vote for new registry",
+			"name": "voting vote for new registry",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -424,7 +424,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/gsr/registry/vote?registryName=provider&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"raw": "http://127.0.0.1:8080/voting/registry/vote?registryName=provider&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -434,7 +434,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"gsr",
+						"voting",
 						"registry",
 						"vote"
 					],
@@ -450,12 +450,12 @@
 						}
 					]
 				},
-				"description": "gsr vote for new registry, after lockup period"
+				"description": "voting vote for new registry, after lockup period"
 			},
 			"response": []
 		},
 		{
-			"name": "gsr vote for new registry Lockup",
+			"name": "voting vote for new registry Lockup",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -464,7 +464,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/gsr/lockupPeriod/registry/vote?registryName=providerdfgdf&sender=0x1F2D5B4F89f4e613158D77BAf2B00f5645687b79",
+					"raw": "http://127.0.0.1:8080/voting/lockupPeriod/registry/vote?registryName=providerdfgdf&sender=0x1F2D5B4F89f4e613158D77BAf2B00f5645687b79",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -474,7 +474,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"gsr",
+						"voting",
 						"lockupPeriod",
 						"registry",
 						"vote"
@@ -491,12 +491,12 @@
 						}
 					]
 				},
-				"description": "gsr vote for new registry, in lockup period"
+				"description": "voting vote for new registry, in lockup period"
 			},
 			"response": []
 		},
 		{
-			"name": "gst make deposit",
+			"name": "voting make deposit",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -505,7 +505,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/gsr/weight/makeDeposit?additionAmount=119&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"raw": "http://127.0.0.1:8080/voting/weight/makeDeposit?additionAmount=119&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -515,7 +515,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"gsr",
+						"voting",
 						"weight",
 						"makeDeposit"
 					],
@@ -536,7 +536,7 @@
 			"response": []
 		},
 		{
-			"name": "gsr set weight",
+			"name": "voting set weight",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -545,7 +545,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/gsr/lockupPeriod/weight/set?newAmount=777&sender=0x1F2D5B4F89f4e613158D77BAf2B00f5645687b79",
+					"raw": "http://127.0.0.1:8080/voting/lockupPeriod/weight/set?newAmount=777&sender=0x1F2D5B4F89f4e613158D77BAf2B00f5645687b79",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -555,7 +555,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"gsr",
+						"voting",
 						"lockupPeriod",
 						"weight",
 						"set"
@@ -572,12 +572,12 @@
 						}
 					]
 				},
-				"description": "gsr set weight, in lockup period"
+				"description": "voting set weight, in lockup period"
 			},
 			"response": []
 		},
 		{
-			"name": "gsr withdraw",
+			"name": "voting withdraw",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -586,7 +586,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/gsr/weight/withdraw?amount=1&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"raw": "http://127.0.0.1:8080/voting/weight/withdraw?amount=1&sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -596,7 +596,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"gsr",
+						"voting",
 						"weight",
 						"withdraw"
 					],
@@ -617,7 +617,7 @@
 			"response": []
 		},
 		{
-			"name": "gsr deposit size",
+			"name": "voting deposit size",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -626,7 +626,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/gsr/weight/size?address=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+					"raw": "http://127.0.0.1:8080/voting/weight/size?address=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -636,7 +636,7 @@
 					],
 					"port": "8080",
 					"path": [
-						"gsr",
+						"voting",
 						"weight",
 						"size"
 					],
@@ -652,7 +652,7 @@
 			"response": []
 		},
 		{
-			"name": "gsr vote",
+			"name": "voting vote",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -672,7 +672,7 @@
 					]
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/gsr/lockupPeriod/vote",
+					"raw": "http://127.0.0.1:8080/voting/lockupPeriod/vote",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -682,17 +682,17 @@
 					],
 					"port": "8080",
 					"path": [
-						"gsr",
+						"voting",
 						"lockupPeriod",
 						"vote"
 					]
 				},
-				"description": "gsr vote, max 20 candidates\ncandidates in JSON array \n\n{\n\t\"0x47E6b00eD2DC8115728e48dAF34d8C8C34669e81\": \"4000\",\n\t\"0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b\": \"6000\"\n}"
+				"description": "voting vote, max 20 candidates\ncandidates in JSON array \n\n{\n\t\"0x47E6b00eD2DC8115728e48dAF34d8C8C34669e81\": \"4000\",\n\t\"0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b\": \"6000\"\n}"
 			},
 			"response": []
 		},
 		{
-			"name": "gsr vote Lockup",
+			"name": "voting vote Lockup",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -712,7 +712,7 @@
 					]
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/gsr/lockupPeriod/vote",
+					"raw": "http://127.0.0.1:8080/voting/lockupPeriod/vote",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -722,12 +722,12 @@
 					],
 					"port": "8080",
 					"path": [
-						"gsr",
+						"voting",
 						"lockupPeriod",
 						"vote"
 					]
 				},
-				"description": "gsr vote, max 20 candidates, in lockup period\ncandidates in JSON array \n\n{\n\t\"0x47E6b00eD2DC8115728e48dAF34d8C8C34669e81\": \"4000\",\n\t\"0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b\": \"6000\"\n}"
+				"description": "voting vote, max 20 candidates, in lockup period\ncandidates in JSON array \n\n{\n\t\"0x47E6b00eD2DC8115728e48dAF34d8C8C34669e81\": \"4000\",\n\t\"0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b\": \"6000\"\n}"
 			},
 			"response": []
 		},
@@ -767,7 +767,7 @@
 						}
 					]
 				},
-				"description": "token allow to addres transfer in lockup period, can use only owner"
+				"description": "token allow to address transfer in lockup period, can use only owner"
 			},
 			"response": []
 		},
@@ -807,7 +807,7 @@
 						}
 					]
 				},
-				"description": "token deny to addres transfer in lockup period, can use only owner"
+				"description": "token deny to address transfer in lockup period, can use only owner"
 			},
 			"response": []
 		},
