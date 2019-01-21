@@ -1440,6 +1440,98 @@
 				"description": "gsr record in registry"
 			},
 			"response": []
+		},
+		{
+			"name": "gsr create record",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "hub",
+							"type": "text"
+						},
+						{
+							"key": "rawRecord",
+							"value": "0x00",
+							"type": "text"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/names/records/create",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"names",
+						"records",
+						"create"
+					]
+				},
+				"description": "gsr create record"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr remove record",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "hub",
+							"type": "text"
+						},
+						{
+							"key": "rawRecord",
+							"value": "0x00",
+							"type": "text"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/names/records/remove",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"names",
+						"records",
+						"remove"
+					]
+				},
+				"description": "gsr remove record"
+			},
+			"response": []
 		}
 	]
 }

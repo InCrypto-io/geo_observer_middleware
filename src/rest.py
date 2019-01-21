@@ -565,13 +565,41 @@ class REST:
         except AssertionError:
             return web.Response(status=406)
 
-    def gsr_create_record(self, request):
-        # , name, raw_record):
-        pass
+    async def gsr_create_record(self, request):
+        data = await request.post()
+        if "name" not in data.keys():
+            return web.Response(status=400)
+        if "rawRecord" not in data.keys():
+            return web.Response(status=400)
+        try:
+            if "sender" in data.keys():
+                self.voting.set_sender(str(data["sender"]))
+            name = str(data["name"])
+            raw_record = data["rawRecord"]
+            text = str(self.gsr.create_record(name, raw_record).hex())
+            return web.Response(text=text)
+        except ValueError:
+            return web.Response(status=400)
+        except AssertionError:
+            return web.Response(status=406)
 
-    def gsr_remove_record(self, request):
-        # , name, raw_record):
-        pass
+    async def gsr_remove_record(self, request):
+        data = await request.post()
+        if "name" not in data.keys():
+            return web.Response(status=400)
+        if "rawRecord" not in data.keys():
+            return web.Response(status=400)
+        try:
+            if "sender" in data.keys():
+                self.voting.set_sender(str(data["sender"]))
+            name = str(data["name"])
+            raw_record = data["rawRecord"]
+            text = str(self.gsr.remove_record(name, raw_record).hex())
+            return web.Response(text=text)
+        except ValueError:
+            return web.Response(status=400)
+        except AssertionError:
+            return web.Response(status=406)
 
     def gsr_is_name_exist(self, request):
         if "name" not in request.rel_url.query.keys():
