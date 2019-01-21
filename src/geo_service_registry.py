@@ -25,27 +25,27 @@ class GeoServiceRegistry:
     def set_sender(self, address):
         self.address = address
 
-    def createRecord(self):
-        #(string name,bytes rawRecord)
-        pass
+    def create_record(self, name, raw_record):
+        raw_transaction = self.contract.functions.createRecord(name, raw_record) \
+            .buildTransaction({'from': self.address, 'gas': 100000, 'nonce': self.connection.get_nonce(self.address),
+                               'gasPrice': self.connection.get_gas_price()})
+        return self.connection.sign_and_send_transaction(self.address, raw_transaction)
 
-    def getOwnerOfName(self):
-        #(string name)
-        pass
+    def remove_record(self, name, raw_record):
+        raw_transaction = self.contract.functions.removeRecord(name, raw_record) \
+            .buildTransaction({'from': self.address, 'gas': 100000, 'nonce': self.connection.get_nonce(self.address),
+                               'gasPrice': self.connection.get_gas_price()})
+        return self.connection.sign_and_send_transaction(self.address, raw_transaction)
 
-    def getRawRecordAt(self):
-        #(string name,uint128 index)
-        pass
+    def get_owner_of_name(self, name):
+        return self.contract.functions.getOwnerOfName(name).call()
 
-    def getRecordsCount(self):
-        #(string name)
-        pass
+    def get_raw_record_at(self, name, index):
+        return self.contract.functions.getRawRecordAt(name, index).call()
 
-    def isNameExist(self):
-        #(string name)
-        pass
+    def get_records_count(self, name):
+        return self.contract.functions.getRecordsCount(name).call()
 
-    def removeRecord(self):
-        #(string name,bytes rawRecord)
-        pass
+    def is_name_exist(self, name):
+        return self.contract.functions.isNameExist(name).call()
 
