@@ -6,7 +6,7 @@ import sys
 from eth_connection import EthConnection
 from events_cache import EventCache
 from registries_cache import RegistriesCache
-from geo_service_registry import Voting
+from voting import Voting
 from settings import Settings
 
 if __name__ == "__main__":

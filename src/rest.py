@@ -1,7 +1,7 @@
 from aiohttp import web
 import config
 from eth_connection import EthConnection
-from geo_service_registry import Voting
+from voting import Voting
 from geo_token import GEOToken
 from events_cache import EventCache
 import time
