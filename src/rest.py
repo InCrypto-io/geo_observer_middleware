@@ -191,12 +191,6 @@ class REST:
         except AssertionError:
             return web.Response(status=406)
 
-    def process_events(self):
-        while self.allow_process_events:
-            self.registries_cache.update()
-            self.registries_cache.update_current_block()
-            time.sleep(1)
-
     def voting_withdraw(self, request):
         if "amount" not in request.rel_url.query.keys():
             return web.Response(status=400)
@@ -568,6 +562,36 @@ class REST:
         except AssertionError:
             return web.Response(status=406)
 
+    def gsr_create_record(self):
+        # , name, raw_record):
+        pass
+
+    def gsr_remove_record(self):
+        # , name, raw_record):
+        pass
+
+    def gsr_is_name_exist(self):
+        # , name):
+        pass
+
+    def gsr_get_owner_of_name(self):
+        # , name):
+        pass
+
+    def gsr_get_records_count(self):
+        # , name):
+        pass
+
+    def gsr_get_raw_record_at(self):
+        # , name, index):
+        pass
+
+    def process_events(self):
+        while self.allow_process_events:
+            self.registries_cache.update()
+            self.registries_cache.update_current_block()
+            time.sleep(1)
+
     def launch(self):
         app = web.Application()
         app.add_routes([web.get('/blocks/firstBlock', self.get_first_block_number),
@@ -610,6 +634,13 @@ class REST:
                         web.get('/token/totalSupply', self.token_total_supply),
                         web.get('/token/transfer', self.token_transfer),
                         web.get('/token/transferFrom', self.token_transfer_from),
+
+                        web.get('/gsr/names/exist', self.gsr_is_name_exist),
+                        web.get('/gsr/names/owner', self.gsr_get_owner_of_name),
+                        web.post('/gsr/names/records/create', self.gsr_create_record),
+                        web.post('/gsr/names/records/remove', self.gsr_remove_record),
+                        web.get('/gsr/names/records/get', self.gsr_get_raw_record_at),
+                        web.get('/gsr/names/records/count', self.gsr_get_records_count),
                         ])
 
         self.allow_process_events = True
