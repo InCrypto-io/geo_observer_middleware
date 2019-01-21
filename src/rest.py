@@ -10,6 +10,7 @@ from settings import Settings
 from threading import Thread
 import json
 from hexbytes import HexBytes
+from geo_service_registry import GeoServiceRegistry
 
 
 class HexJsonEncoder(json.JSONEncoder):
@@ -25,6 +26,7 @@ class REST:
 
         self.voting = Voting(self.eth_connection, config.VOTING_ADDRESS)
         self.geo = GEOToken(self.eth_connection, config.GEOTOKEN_ADDRESS)
+        self.gsr = GeoServiceRegistry(self.eth_connection, config.GSR_ADDRESS)
 
         settings = Settings(config.DB_URL)
 
@@ -562,27 +564,38 @@ class REST:
         except AssertionError:
             return web.Response(status=406)
 
-    def gsr_create_record(self):
+    def gsr_create_record(self, request):
         # , name, raw_record):
         pass
 
-    def gsr_remove_record(self):
+    def gsr_remove_record(self, request):
         # , name, raw_record):
         pass
 
-    def gsr_is_name_exist(self):
+    def gsr_is_name_exist(self, request):
+        if "name" not in request.rel_url.query.keys():
+            return web.Response(status=400)
+        try:
+            name = str(request.rel_url.query["name"])
+            text = json.dumps({
+                "name": name,
+                "exist": self.gsr.is_name_exist(name)
+            })
+            return web.Response(text=text)
+        except ValueError:
+            return web.Response(status=400)
+        except AssertionError:
+            return web.Response(status=406)
+
+    def gsr_get_owner_of_name(self, request):
         # , name):
         pass
 
-    def gsr_get_owner_of_name(self):
+    def gsr_get_records_count(self, request):
         # , name):
         pass
 
-    def gsr_get_records_count(self):
-        # , name):
-        pass
-
-    def gsr_get_raw_record_at(self):
+    def gsr_get_raw_record_at(self, request):
         # , name, index):
         pass
 

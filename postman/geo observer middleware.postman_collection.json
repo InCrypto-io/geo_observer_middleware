@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "81edca1d-b872-40a5-a23b-69dfa6eef1ad",
+		"_postman_id": "904fc494-b9f9-4343-8762-e6957bfcbd23",
 		"name": "geo observer middleware",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1292,6 +1292,48 @@
 					]
 				},
 				"description": "token transfer"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr check existing of name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/token/transfer?sender=0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b&value=541&receiverAddress=0xACF2139DEDEB8255b9A07B2bdaC23C089acb6EB2",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"token",
+						"transfer"
+					],
+					"query": [
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b"
+						},
+						{
+							"key": "value",
+							"value": "541"
+						},
+						{
+							"key": "receiverAddress",
+							"value": "0xACF2139DEDEB8255b9A07B2bdaC23C089acb6EB2"
+						}
+					]
+				},
+				"description": "gsr check existing of name"
 			},
 			"response": []
 		}
