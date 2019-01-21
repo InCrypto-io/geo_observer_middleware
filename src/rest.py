@@ -618,7 +618,7 @@ class REST:
         worker = Thread(target=self.process_events, daemon=True)
         worker.start()
 
-        web.run_app(app)
+        web.run_app(app, port=config.REST_API_PORT)
 
         self.allow_process_events = False
         self.event_cache.stop_collect()
