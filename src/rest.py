@@ -10,6 +10,8 @@ from settings import Settings
 from threading import Thread
 import json
 from hexbytes import HexBytes
+from geo_service_registry import GeoServiceRegistry
+import web3
 
 
 class HexJsonEncoder(json.JSONEncoder):
@@ -25,6 +27,7 @@ class REST:
 
         self.voting = Voting(self.eth_connection, config.VOTING_ADDRESS)
         self.geo = GEOToken(self.eth_connection, config.GEOTOKEN_ADDRESS)
+        self.gsr = GeoServiceRegistry(self.eth_connection, config.GSR_ADDRESS)
 
         settings = Settings(config.DB_URL)
 
@@ -190,12 +193,6 @@ class REST:
             return web.Response(status=400)
         except AssertionError:
             return web.Response(status=406)
-
-    def process_events(self):
-        while self.allow_process_events:
-            self.registries_cache.update()
-            self.registries_cache.update_current_block()
-            time.sleep(1)
 
     def voting_withdraw(self, request):
         if "amount" not in request.rel_url.query.keys():
@@ -568,6 +565,112 @@ class REST:
         except AssertionError:
             return web.Response(status=406)
 
+    async def gsr_create_record(self, request):
+        data = await request.post()
+        if "name" not in data.keys():
+            return web.Response(status=400)
+        if "rawRecord" not in data.keys():
+            return web.Response(status=400)
+        try:
+            if "sender" in data.keys():
+                self.voting.set_sender(str(data["sender"]))
+            name = str(data["name"])
+            raw_record = data["rawRecord"]
+            text = str(self.gsr.create_record(name, raw_record).hex())
+            return web.Response(text=text)
+        except ValueError:
+            return web.Response(status=400)
+        except AssertionError:
+            return web.Response(status=406)
+
+    async def gsr_remove_record(self, request):
+        data = await request.post()
+        if "name" not in data.keys():
+            return web.Response(status=400)
+        if "rawRecord" not in data.keys():
+            return web.Response(status=400)
+        try:
+            if "sender" in data.keys():
+                self.voting.set_sender(str(data["sender"]))
+            name = str(data["name"])
+            raw_record = data["rawRecord"]
+            text = str(self.gsr.remove_record(name, raw_record).hex())
+            return web.Response(text=text)
+        except ValueError:
+            return web.Response(status=400)
+        except AssertionError:
+            return web.Response(status=406)
+
+    def gsr_is_name_exist(self, request):
+        if "name" not in request.rel_url.query.keys():
+            return web.Response(status=400)
+        try:
+            name = str(request.rel_url.query["name"])
+            text = json.dumps({
+                "name": name,
+                "exist": self.gsr.is_name_exist(name)
+            })
+            return web.Response(text=text)
+        except ValueError:
+            return web.Response(status=400)
+        except AssertionError:
+            return web.Response(status=406)
+
+    def gsr_get_owner_of_name(self, request):
+        if "name" not in request.rel_url.query.keys():
+            return web.Response(status=400)
+        try:
+            name = str(request.rel_url.query["name"])
+            text = json.dumps({
+                "name": name,
+                "owner": self.gsr.get_owner_of_name(name)
+            })
+            return web.Response(text=text)
+        except ValueError:
+            return web.Response(status=400)
+        except AssertionError:
+            return web.Response(status=406)
+
+    def gsr_get_records_count(self, request):
+        if "name" not in request.rel_url.query.keys():
+            return web.Response(status=400)
+        try:
+            name = str(request.rel_url.query["name"])
+            text = json.dumps({
+                "name": name,
+                "count": self.gsr.get_records_count(name)
+            })
+            return web.Response(text=text)
+        except ValueError:
+            return web.Response(status=400)
+        except AssertionError:
+            return web.Response(status=406)
+
+    def gsr_get_raw_record_at(self, request):
+        if "name" not in request.rel_url.query.keys():
+            return web.Response(status=400)
+        if "index" not in request.rel_url.query.keys():
+            return web.Response(status=400)
+        try:
+            name = str(request.rel_url.query["name"])
+            index = int(request.rel_url.query["index"])
+            text = json.dumps({
+                "name": name,
+                "index": index,
+                "record": self.gsr.get_raw_record_at(name, index).hex()
+            })
+            return web.Response(text=text)
+        except (ValueError, web3.exceptions.ValidationError, web3.exceptions.BadFunctionCallOutput):
+            return web.Response(status=400)
+        except AssertionError:
+            return web.Response(status=406)
+
+    def process_events(self):
+        while self.allow_process_events:
+            self.registries_cache.update()
+            self.registries_cache.update_current_block()
+            time.sleep(1)
+
     def launch(self):
         app = web.Application()
         app.add_routes([web.get('/blocks/firstBlock', self.get_first_block_number),
@@ -610,6 +713,13 @@ class REST:
                         web.get('/token/totalSupply', self.token_total_supply),
                         web.get('/token/transfer', self.token_transfer),
                         web.get('/token/transferFrom', self.token_transfer_from),
+
+                        web.get('/gsr/names/exist', self.gsr_is_name_exist),
+                        web.get('/gsr/names/owner', self.gsr_get_owner_of_name),
+                        web.post('/gsr/names/records/create', self.gsr_create_record),
+                        web.post('/gsr/names/records/remove', self.gsr_remove_record),
+                        web.get('/gsr/names/records/get', self.gsr_get_raw_record_at),
+                        web.get('/gsr/names/records/count', self.gsr_get_records_count),
                         ])
 
         self.allow_process_events = True

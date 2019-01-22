@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "81edca1d-b872-40a5-a23b-69dfa6eef1ad",
+		"_postman_id": "904fc494-b9f9-4343-8762-e6957bfcbd23",
 		"name": "geo observer middleware",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -1292,6 +1292,244 @@
 					]
 				},
 				"description": "token transfer"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr check existing of name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/names/exist?name=hub",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"names",
+						"exist"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "hub"
+						}
+					]
+				},
+				"description": "gsr check existing of name"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr get owner of name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/names/owner?name=hub",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"names",
+						"owner"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "hub"
+						}
+					]
+				},
+				"description": "gsr get owner of name"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr records count",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/names/records/count?name=hub",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"names",
+						"records",
+						"count"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "hub"
+						}
+					]
+				},
+				"description": "gsr records count"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr record",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/names/records/get?name=hub&index=1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"names",
+						"records",
+						"get"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "hub"
+						},
+						{
+							"key": "index",
+							"value": "1"
+						}
+					]
+				},
+				"description": "gsr record in registry"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr create record",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "hub",
+							"type": "text"
+						},
+						{
+							"key": "rawRecord",
+							"value": "0000000003313233",
+							"type": "text"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/names/records/create",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"names",
+						"records",
+						"create"
+					]
+				},
+				"description": "gsr create record"
+			},
+			"response": []
+		},
+		{
+			"name": "gsr remove record",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "hub",
+							"type": "text"
+						},
+						{
+							"key": "rawRecord",
+							"value": "0000000003313233",
+							"type": "text"
+						},
+						{
+							"key": "sender",
+							"value": "0x53DDBAbB63f5Fd89b127458ef8cbb8DD40f6E68b",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/gsr/names/records/remove",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"gsr",
+						"names",
+						"records",
+						"remove"
+					]
+				},
+				"description": "gsr remove record"
 			},
 			"response": []
 		}
