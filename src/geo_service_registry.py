@@ -27,13 +27,13 @@ class GeoServiceRegistry:
 
     def create_record(self, name, raw_record):
         raw_transaction = self.contract.functions.createRecord(name, raw_record) \
-            .buildTransaction({'from': self.address, 'gas': 100000, 'nonce': self.connection.get_nonce(self.address),
+            .buildTransaction({'from': self.address, 'gas': 1000000, 'nonce': self.connection.get_nonce(self.address),
                                'gasPrice': self.connection.get_gas_price()})
         return self.connection.sign_and_send_transaction(self.address, raw_transaction)
 
     def remove_record(self, name, raw_record):
         raw_transaction = self.contract.functions.removeRecord(name, raw_record) \
-            .buildTransaction({'from': self.address, 'gas': 100000, 'nonce': self.connection.get_nonce(self.address),
+            .buildTransaction({'from': self.address, 'gas': 1000000, 'nonce': self.connection.get_nonce(self.address),
                                'gasPrice': self.connection.get_gas_price()})
         return self.connection.sign_and_send_transaction(self.address, raw_transaction)
 

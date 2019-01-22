@@ -1411,7 +1411,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/gsr/names/records/get?name=hub&index=55",
+					"raw": "http://127.0.0.1:8080/gsr/names/records/get?name=hub&index=1",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -1433,7 +1433,7 @@
 						},
 						{
 							"key": "index",
-							"value": "55"
+							"value": "1"
 						}
 					]
 				},
@@ -1456,7 +1456,7 @@
 						},
 						{
 							"key": "rawRecord",
-							"value": "0x00",
+							"value": "0000000003313233",
 							"type": "text"
 						},
 						{
@@ -1502,7 +1502,7 @@
 						},
 						{
 							"key": "rawRecord",
-							"value": "0x00",
+							"value": "0000000003313233",
 							"type": "text"
 						},
 						{
