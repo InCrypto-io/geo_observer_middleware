@@ -1,4 +1,5 @@
 
+# WEB3_PROVIDER = "ws://127.0.0.1:7545"
 WEB3_PROVIDER = "wss://rinkeby.infura.io/ws/v3/your_api_key"
 Voting_Address = "0x2011Cc6E9B69b6336680F0Ee8A6744b9ae87Af0C"
 VOTING_CREATED_AT_BLOCK = 3660375
