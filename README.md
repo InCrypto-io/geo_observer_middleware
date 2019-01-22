@@ -26,7 +26,8 @@ if you want change it, make it and in `docker-compose.yaml` file<br />
 `docker-compose up`
 
 ####Clean
-`cker-compose -f ./docker-compose-clean.yaml build && docker-compose -f ./docker-compose-clean.yaml up`
+`docker-compose down`
+`docker-compose rm`
 
 #Standalone
 ###Requirement
