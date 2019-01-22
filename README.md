@@ -19,14 +19,11 @@ if you want change it, make it and in `docker-compose.yaml` file<br />
     docker
     docker-compose    
 
-####Build
-`docker-compose build`
-
 ####Launch REST API Server
 `docker-compose up`
 
 ####Clean
-`docker-compose down`
+`docker-compose down` <br />
 `docker-compose rm`
 
 #Standalone
