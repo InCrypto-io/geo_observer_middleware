@@ -10,15 +10,7 @@ from voting import Voting
 from settings import Settings
 
 if __name__ == "__main__":
-    if "TEST" in config.COMMAND_ARGS:
-        test = Test()
-        test.test()
-        # test.test_events_cache()
-        test.test_registries_cache()
-    elif "REST" in config.COMMAND_ARGS:
-        rest = REST()
-        rest.launch()
-    elif "CLEAR" in sys.argv:
+    if "CLEAR" in sys.argv:
         eth_connection = EthConnection(config.WEB3_PROVIDER, config.MNEMONIC, config.DB_URL)
         settings = Settings(config.DB_URL)
         voting = Voting(eth_connection, config.VOTING_ADDRESS)
@@ -35,6 +27,14 @@ if __name__ == "__main__":
         event_cache.erase_all(0)
         registries_cache.erase(0)
         eth_connection.erase()
+    elif "TEST" in config.COMMAND_ARGS:
+        test = Test()
+        test.test()
+        # test.test_events_cache()
+        test.test_registries_cache()
+    elif "REST" in config.COMMAND_ARGS:
+        rest = REST()
+        rest.launch()
     else:
         print("in config.COMMAND_ARGS: TEST - for testing")
         print("in config.COMMAND_ARGS: REST - launch REST API service")
