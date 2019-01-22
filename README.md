@@ -1,6 +1,6 @@
 # GEO OBSERVER MIDDLEWARE
 
-#Prepare config for docker or standalone launch
+# Prepare config for docker or standalone launch
 Copy and rename `config.example.py` to `config.py`.<br />
 `WEB3_PROVIDER` - web socket URL address to Ethereum<br /> 
 `Voting_Address` - address of Voting contract<br /> 
@@ -14,32 +14,32 @@ Copy and rename `config.example.py` to `config.py`.<br />
 `REST_API_PORT` - port where REST API listening of requests, 
 if you want change it, make it and in `docker-compose.yaml` file<br /> 
 
-#With Docker
-###Requirement
+# With Docker
+### Requirement
     docker
     docker-compose    
 
-####Launch REST API Server
+#### Launch REST API Server
 `docker-compose up`
 
-####Clean
+#### Clean
 `docker-compose down` <br />
 `docker-compose rm`
 
-#Standalone
-###Requirement
+# Standalone
+### Requirement
 Install python 3, mongodb<br />
 `pip install -r requirements.txt`
 
-##Prepare config
+## Prepare config
 Change in config file URL to mongo db server <br />
 `DB_URL = "mongodb://127.0.0.1:27017/"`
 
-####Launch REST API Server
+#### Launch REST API Server
  `python3 ./src/manage.py`
 
-####Clean
+#### Clean
  `python3 ./src/manage.py CLEAN`
 
-#Usage
+# Usage
  Watch https://documenter.getpostman.com/view/5899787/RztfvWwY
