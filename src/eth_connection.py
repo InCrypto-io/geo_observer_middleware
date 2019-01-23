@@ -47,15 +47,18 @@ class EthConnection:
 
     def get_nonce(self, address):
         if address in self.nonces.keys():
+            nonce = self.nonces[address]
             self.nonces[address] = self.nonces[address] + 1
-            return self.nonces[address]
+            return nonce
         last_stored_nonce = self.get_last_stored_nonce(address)
         transaction_count = self.get_web3().eth.getTransactionCount(address, "pending")
         if last_stored_nonce + 1 > transaction_count:
+            nonce = last_stored_nonce
             self.nonces[address] = last_stored_nonce + 1
         else:
+            nonce = transaction_count
             self.nonces[address] = transaction_count
-        return self.nonces[address]
+        return nonce
 
     def sign_and_send_transaction(self, address, raw_transaction):
         assert address in self.get_accounts()
