@@ -723,7 +723,7 @@ class REST:
                         ])
 
         self.allow_process_events = True
-        self.event_cache.collect()
+        self.eth_connection.wait_stable_connection()
 
         worker = Thread(target=self.process_events, daemon=True)
         worker.start()

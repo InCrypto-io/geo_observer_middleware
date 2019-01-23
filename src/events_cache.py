@@ -3,7 +3,7 @@ from pymongo import MongoClient
 import time
 from threading import Thread
 import concurrent.futures
-
+import websockets
 
 class EventCache:
     def __init__(self, connection, voting, voting_created_at_block, db_url, confirmation_count, settings):
@@ -22,12 +22,16 @@ class EventCache:
         self.settings = settings
         self.voting_created_at_block = voting_created_at_block
 
+    def init_web3(self):
+        pass
+
     def collect(self):
         self.stop_collect_events = False
         worker = Thread(target=self.process_events, daemon=True)
         worker.start()
 
     def process_events(self):
+        self.connection.wait_stable_connection()
         new_block_filter = self.connection.get_web3().eth.filter('latest')
         while not self.stop_collect_events:
             try:
@@ -45,7 +49,10 @@ class EventCache:
                             self.connection.get_web3().eth.uninstallFilter(event_filter.filter_id)
                         self.set_last_processed_block_number(self.get_last_processed_block_number() + 1)
                 time.sleep(10)
-            except concurrent.futures._base.TimeoutError or ValueError:
+            except (concurrent.futures._base.TimeoutError, ValueError):
+                new_block_filter = self.connection.get_web3().eth.filter('latest')
+            except (websockets.ConnectionClosed, ConnectionRefusedError):
+                self.connection.wait_stable_connection()
                 new_block_filter = self.connection.get_web3().eth.filter('latest')
 
         self.connection.get_web3().eth.uninstallFilter(new_block_filter.filter_id)

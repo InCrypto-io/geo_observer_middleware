@@ -2,21 +2,22 @@ from web3 import Web3
 from libs.ethBIP44.ethLib import HDPrivateKey, HDKey
 import pymongo
 from pymongo import MongoClient
+import time
 
 
 class EthConnection:
     def __init__(self, provider, mnemonic, db_url):
-        print("selected provider is {}".format(provider))
+        self.provider = provider
+        print("selected provider is {}".format(self.provider))
 
-        assert len(provider) > 0
+        assert len(self.provider) > 0
 
         self.client = MongoClient(db_url)
         self.db = self.client['db_geo_transactions']
         self.transactions_collection = self.db["transactions"]
 
-        self.w3 = Web3(Web3.WebsocketProvider(provider))
-
-        print("connected to {}: {}".format(provider, self.get_web3().isConnected()))
+        self.w3 = None
+        self.init_web3()
 
         if len(mnemonic):
             try:
@@ -36,6 +37,12 @@ class EthConnection:
                 self.accounts = []
 
         self.nonces = {}
+
+    def init_web3(self):
+        try:
+            self.w3 = Web3(Web3.WebsocketProvider(self.provider))
+        except Exception:
+            self.w3 = None
 
     def get_web3(self):
         return self.w3
@@ -100,8 +107,15 @@ class EthConnection:
     def get_last_stored_nonce(self, address):
         if self.transactions_collection.find({"from": address}).count() == 0:
             return 0
-        return self.transactions_collection.find({"from": address}).sort([("nonce", pymongo.DESCENDING)])\
+        return self.transactions_collection.find({"from": address}).sort([("nonce", pymongo.DESCENDING)]) \
             .limit(1)[0]["nonce"]
 
     def get_transaction_info(self, tx_hash):
         return self.get_web3().eth.getTransaction(tx_hash)
+
+    def wait_stable_connection(self):
+        while not self.get_web3() or not self.get_web3().isConnected():
+            print("Can't connect to Ethereum node, wait...")
+            self.init_web3()
+            time.sleep(1)
+        print("connected to {}: {}".format(self.provider, self.get_web3().isConnected()))
