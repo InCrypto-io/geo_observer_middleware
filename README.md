@@ -20,7 +20,7 @@ if you want change it, make it and in `docker-compose.yaml` file<br />
     docker-compose    
 
 #### Launch REST API Server
-`docker-compose up`
+`docker-compose build && docker-compose up`
 
 #### Clean
 `docker-compose down` <br />
