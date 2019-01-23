@@ -67,8 +67,8 @@ class REST:
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
 
     def is_registry_exist(self, request):
         if "registryName" not in request.rel_url.query.keys():
@@ -87,8 +87,8 @@ class REST:
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
 
     def get_winners_list(self, request):
         if "registryName" not in request.rel_url.query.keys():
@@ -107,8 +107,8 @@ class REST:
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
 
     def get_vote_for_candidate(self, request):
         if "address" not in request.rel_url.query.keys():
@@ -131,8 +131,8 @@ class REST:
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
 
     def get_weight(self, request):
         if "address" not in request.rel_url.query.keys():
@@ -151,8 +151,8 @@ class REST:
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
 
     def get_gas_price(self, request):
         text = str(self.eth_connection.get_gas_price())
@@ -171,8 +171,8 @@ class REST:
             hash = str(request.rel_url.query["hash"])
             text = json.dumps(dict(self.eth_connection.get_transaction_info(hash)), cls=HexJsonEncoder)
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
 
     def resend(self, request):
         if "hash" not in request.rel_url.query.keys():
@@ -189,8 +189,8 @@ class REST:
                 "newHash": self.eth_connection.resend(hash, gas_price)
             })
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -203,8 +203,8 @@ class REST:
             amount = int(request.rel_url.query["amount"])
             text = str(self.voting.withdraw(amount).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -217,8 +217,8 @@ class REST:
             registry_name = str(request.rel_url.query["registryName"])
             text = str(self.voting.vote_service_lockup_for_new_registry(registry_name).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -240,8 +240,8 @@ class REST:
                 amounts.append(int(array[key]))
             text = str(self.voting.vote_service_lockup(registry_name, candidates, amounts).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -254,8 +254,8 @@ class REST:
             registry_name = str(request.rel_url.query["registryName"])
             text = str(self.voting.vote_service_for_new_registry(registry_name).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -277,8 +277,8 @@ class REST:
                 amounts.append(int(array[key]))
             text = str(self.voting.vote_service(registry_name, candidates, amounts).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -291,8 +291,8 @@ class REST:
             new_amount = int(request.rel_url.query["newAmount"])
             text = str(self.voting.set_vote_weight_in_lockup_period(new_amount).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -305,8 +305,8 @@ class REST:
             addition_amount = int(request.rel_url.query["additionAmount"])
             text = str(self.voting.make_deposit(addition_amount).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -320,8 +320,8 @@ class REST:
                 "exist": self.voting.is_registry_exist(registry_name)
             })
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -335,8 +335,8 @@ class REST:
                 "deposit": self.voting.deposit(address)
             })
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -349,8 +349,8 @@ class REST:
             address = str(request.rel_url.query["address"])
             text = str(self.geo.allow_transfer_in_lockup_period(address).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -368,8 +368,8 @@ class REST:
                 "allowance": self.geo.allowance(owner_address, spender_address)
             })
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -385,8 +385,8 @@ class REST:
             value = int(request.rel_url.query["value"])
             text = str(self.geo.approve(spender, value).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -400,8 +400,8 @@ class REST:
                 "balance": self.geo.balance_of(address)
             })
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -417,8 +417,8 @@ class REST:
             value = int(request.rel_url.query["value"])
             text = str(self.geo.burn(address, value).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -434,8 +434,8 @@ class REST:
             subtracted_value = int(request.rel_url.query["subtractedValue"])
             text = str(self.geo.decrease_allowance(spender, subtracted_value).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -448,8 +448,8 @@ class REST:
             address = str(request.rel_url.query["address"])
             text = str(self.geo.deny_transfer_in_lockup_period(address).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -465,8 +465,8 @@ class REST:
             added_value = int(request.rel_url.query["addedValue"])
             text = str(self.geo.increase_allowance(spender, added_value).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -480,8 +480,8 @@ class REST:
                 "expired": self.geo.is_lockup_expired(address)
             })
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -497,8 +497,8 @@ class REST:
             value = int(request.rel_url.query["value"])
             text = str(self.geo.mint(address, value).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -514,8 +514,8 @@ class REST:
             expired_time = int(request.rel_url.query["time"])
             text = str(self.geo.set_individual_lockup_expire_time(address, expired_time).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -523,8 +523,8 @@ class REST:
         try:
             text = str(self.geo.total_supply())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -540,8 +540,8 @@ class REST:
             value = int(request.rel_url.query["value"])
             text = str(self.geo.transfer(receiver, value).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -560,8 +560,8 @@ class REST:
             value = int(request.rel_url.query["value"])
             text = str(self.geo.transfer_from(sender, receiver, value).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -578,8 +578,8 @@ class REST:
             raw_record = data["rawRecord"]
             text = str(self.gsr.create_record(name, raw_record).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -596,8 +596,8 @@ class REST:
             raw_record = data["rawRecord"]
             text = str(self.gsr.remove_record(name, raw_record).hex())
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -611,8 +611,8 @@ class REST:
                 "exist": self.gsr.is_name_exist(name)
             })
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -626,8 +626,8 @@ class REST:
                 "owner": self.gsr.get_owner_of_name(name)
             })
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -641,8 +641,8 @@ class REST:
                 "count": self.gsr.get_records_count(name)
             })
             return web.Response(text=text)
-        except ValueError:
-            return web.Response(status=400)
+        except (ValueError, TypeError) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
@@ -660,8 +660,8 @@ class REST:
                 "record": self.gsr.get_raw_record_at(name, index).hex()
             })
             return web.Response(text=text)
-        except (ValueError, web3.exceptions.ValidationError, web3.exceptions.BadFunctionCallOutput):
-            return web.Response(status=400)
+        except (ValueError, web3.exceptions.ValidationError, web3.exceptions.BadFunctionCallOutput) as e:
+            return web.Response(status=400, text=str(e))
         except AssertionError:
             return web.Response(status=406)
 
