@@ -30,7 +30,7 @@ class RegistriesCache:
         current_preprocessed_block_number = self.get_current_preprocessed_block_number()
         if self.event_cache.get_last_processed_block_number() < self.voting_created_at_block:
             return
-        if self.event_cache.get_last_processed_block_number() <= \
+        if self.event_cache.get_last_processed_block_number() > \
                 self.__get_last_preprocessed_block_number() + self.interval_for_preprocessed_blocks:
             return
         if current_preprocessed_block_number < self.event_cache.get_last_processed_block_number():
