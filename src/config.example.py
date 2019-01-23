@@ -1,6 +1,6 @@
 
 # for ganache from docker, need local ip
-# WEB3_PROVIDER = "ws://192.168.1.44:7545"
+# WEB3_PROVIDER = "ws://192.168.1.44:7545/ws"
 # for ganache
 # WEB3_PROVIDER = "ws://127.0.0.1:7545/ws"
 WEB3_PROVIDER = "wss://rinkeby.infura.io/ws/v3/4086b3432d5941a29b19ae75f0322589"
