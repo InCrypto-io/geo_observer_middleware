@@ -51,7 +51,7 @@ class REST:
         return web.Response(text=text)
 
     def get_current_block_number(self, request):
-        text = str(self.registries_cache.get_current_preprocessed_block_number())
+        text = str(self.registries_cache.get_last_preprocessed_block_number())
         return web.Response(text=text)
 
     def get_registries(self, request):
@@ -60,7 +60,7 @@ class REST:
         try:
             block_number = int(request.rel_url.query["blockNumber"])
             if block_number < config.VOTING_CREATED_AT_BLOCK \
-                    or block_number > self.registries_cache.get_current_preprocessed_block_number():
+                    or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
                 "registries": self.registries_cache.get_registry_list(block_number),
@@ -79,7 +79,7 @@ class REST:
             registry_name = str(request.rel_url.query["registryName"])
             block_number = int(request.rel_url.query["blockNumber"])
             if block_number < config.VOTING_CREATED_AT_BLOCK \
-                    or block_number > self.registries_cache.get_current_preprocessed_block_number():
+                    or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
                 "registry": registry_name,
@@ -99,7 +99,7 @@ class REST:
             registry_name = str(request.rel_url.query["registryName"])
             block_number = int(request.rel_url.query["blockNumber"])
             if block_number < config.VOTING_CREATED_AT_BLOCK \
-                    or block_number > self.registries_cache.get_current_preprocessed_block_number():
+                    or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
                 "registry": registry_name,
@@ -122,7 +122,7 @@ class REST:
             registry_name = str(request.rel_url.query["registryName"])
             block_number = int(request.rel_url.query["blockNumber"])
             if block_number < config.VOTING_CREATED_AT_BLOCK \
-                    or block_number > self.registries_cache.get_current_preprocessed_block_number():
+                    or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
                 "registry": registry_name,
@@ -143,7 +143,7 @@ class REST:
             address = str(request.rel_url.query["address"])
             block_number = int(request.rel_url.query["blockNumber"])
             if block_number < config.VOTING_CREATED_AT_BLOCK \
-                    or block_number > self.registries_cache.get_current_preprocessed_block_number():
+                    or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
                 "address": address,
