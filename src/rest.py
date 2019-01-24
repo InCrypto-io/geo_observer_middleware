@@ -668,7 +668,6 @@ class REST:
     def process_events(self):
         while self.allow_process_events:
             self.registries_cache.update()
-            self.registries_cache.update_current_block()
             time.sleep(1)
 
     def launch(self):

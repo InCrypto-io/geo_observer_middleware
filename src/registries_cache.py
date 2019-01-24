@@ -26,21 +26,6 @@ class RegistriesCache:
             last_processed_block_number = last_processed_block_number + self.interval_for_preprocessed_blocks
             self.__set_last_preprocessed_block_number(last_processed_block_number)
 
-    def update_current_block(self):
-        current_preprocessed_block_number = self.get_current_preprocessed_block_number()
-        if self.event_cache.get_last_processed_block_number() < self.voting_created_at_block:
-            return
-        if self.event_cache.get_last_processed_block_number() > \
-                self.__get_last_preprocessed_block_number() + self.interval_for_preprocessed_blocks:
-            return
-        if current_preprocessed_block_number < self.event_cache.get_last_processed_block_number():
-            if current_preprocessed_block_number != self.__determine_previous_preprocessed_block(
-                    self.event_cache.get_last_processed_block_number()):
-                self.__remove_dbs_for_block_number(current_preprocessed_block_number)
-            if self.event_cache.get_last_processed_block_number() != self.__get_last_preprocessed_block_number():
-                self.__preprocess_block(self.event_cache.get_last_processed_block_number())
-            self.__set_current_preprocessed_block_number(self.event_cache.get_last_processed_block_number())
-
     def __preprocess_block(self, block_number, save_to_db=True):
         print("__preprocess_block", block_number)
         assert block_number >= self.voting_created_at_block
