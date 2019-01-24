@@ -5,6 +5,7 @@ from threading import Thread
 import concurrent.futures
 import websockets
 
+
 class EventCache:
     def __init__(self, connection, voting, voting_created_at_block, db_url, confirmation_count, settings):
         self.connection = connection
@@ -39,13 +40,14 @@ class EventCache:
                     last_block_number = self.connection.get_web3().eth.blockNumber
                     print("exist new block", last_block_number)
                     while self.get_last_processed_block_number() + self.confirmation_count < last_block_number:
-                        print("get events for block:", self.get_last_processed_block_number() + 1)
                         for event_name in self.voting.get_events_list():
+                            current_block_number = self.get_last_processed_block_number() + 1
                             event_filter = self.voting.contract.eventFilter(event_name,
-                                                                         {'fromBlock': self.get_last_processed_block_number() + 1,
-                                                                          'toBlock': self.get_last_processed_block_number() + 1})
+                                                                            {'fromBlock': current_block_number,
+                                                                             'toBlock': current_block_number})
+                            block = self.connection.get_web3().eth.getBlock(current_block_number)
                             for event in event_filter.get_all_entries():
-                                self.write_event(event)
+                                self.write_event(event, block["timestamp"])
                             self.connection.get_web3().eth.uninstallFilter(event_filter.filter_id)
                         self.set_last_processed_block_number(self.get_last_processed_block_number() + 1)
                 time.sleep(10)
@@ -60,7 +62,7 @@ class EventCache:
     def stop_collect(self):
         self.stop_collect_events = True
 
-    def write_event(self, event):
+    def write_event(self, event, timestamp):
         print("write_event", event)
         for f in ["event", "logIndex", "transactionIndex", "transactionHash", "address", "blockHash", "blockNumber"]:
             if f not in event:
@@ -73,6 +75,8 @@ class EventCache:
             data[key] = event[key]
         for key in event["args"]:
             data[key] = event["args"][key]
+        data["timestamp"] = timestamp
+
         try:
             self.events_collection.insert_one(data)
         except pymongo.errors.DuplicateKeyError:
