@@ -724,6 +724,8 @@ class REST:
         self.allow_process_events = True
         self.eth_connection.wait_stable_connection()
 
+        self.event_cache.collect()
+
         worker = Thread(target=self.process_events, daemon=True)
         worker.start()
 
