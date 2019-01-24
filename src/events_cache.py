@@ -63,9 +63,9 @@ class EventCache:
         self.stop_collect_events = True
 
     def write_event(self, event, timestamp):
-        print("write_event", event)
         for f in ["event", "logIndex", "transactionIndex", "transactionHash", "address", "blockHash", "blockNumber"]:
             if f not in event:
+                print(event)
                 print("Event not contains expected fields")
                 break
         data = {}

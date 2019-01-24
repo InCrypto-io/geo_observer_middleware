@@ -11,7 +11,7 @@ from settings import Settings
 class Test:
     def __init__(self):
         self.eth_connection = EthConnection(config.WEB3_PROVIDER, config.MNEMONIC, config.DB_URL)
-        self.voting = Voting(self.eth_connection, config.VOTING_ADDRESS)
+        self.voting = Voting(self.eth_connection, config.VOTING_ADDRESS, config.VOTING_CREATED_AT_BLOCK)
         self.geo = GEOToken(self.eth_connection, config.GEOTOKEN_ADDRESS)
 
     def test(self):

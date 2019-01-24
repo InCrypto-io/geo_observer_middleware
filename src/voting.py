@@ -3,7 +3,7 @@ import json
 
 class Voting:
 
-    def __init__(self, connection, address):
+    def __init__(self, connection, address, created_at_block):
         self.connection = connection
 
         interface_file = open("./abi/Voting.json", "r")
@@ -21,6 +21,8 @@ class Voting:
             self.address = connection.get_accounts()[0]
         else:
             self.address = ""
+
+        self.creation_timestamp = self.connection.get_web3().eth.getBlock(created_at_block)["timestamp"]
 
     def set_sender(self, address):
         self.address = address

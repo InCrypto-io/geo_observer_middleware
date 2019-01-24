@@ -17,6 +17,10 @@ class RegistriesCache:
         self.db = self.client['db_geo_registries']
 
     def update(self):
+
+        # timestamp
+        assert False
+
         last_processed_block_number = self.get_last_preprocessed_block_number()
         if self.event_cache.get_last_processed_block_number() < self.voting_created_at_block:
             return

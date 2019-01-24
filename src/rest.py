@@ -25,7 +25,7 @@ class REST:
     def __init__(self):
         self.eth_connection = EthConnection(config.WEB3_PROVIDER, config.MNEMONIC, config.DB_URL)
 
-        self.voting = Voting(self.eth_connection, config.VOTING_ADDRESS)
+        self.voting = Voting(self.eth_connection, config.VOTING_ADDRESS, config.VOTING_CREATED_AT_BLOCK)
         self.geo = GEOToken(self.eth_connection, config.GEOTOKEN_ADDRESS)
         self.gsr = GeoServiceRegistry(self.eth_connection, config.GSR_ADDRESS)
 
@@ -39,6 +39,7 @@ class REST:
             config.CONFIRMATION_COUNT,
             settings)
 
+        print("self.voting.creation_timestamp", self.voting.creation_timestamp)
         self.registries_cache = RegistriesCache(self.event_cache, config.VOTING_CREATED_AT_BLOCK,
                                                 config.DB_URL,
                                                 config.INTERVAL_FOR_PREPROCESSED_BLOCKS, settings,

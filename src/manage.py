@@ -13,7 +13,7 @@ if __name__ == "__main__":
     if "CLEAR" in sys.argv:
         eth_connection = EthConnection(config.WEB3_PROVIDER, config.MNEMONIC, config.DB_URL)
         settings = Settings(config.DB_URL)
-        voting = Voting(eth_connection, config.VOTING_ADDRESS)
+        voting = Voting(eth_connection, config.VOTING_ADDRESS, config.VOTING_CREATED_AT_BLOCK)
         event_cache = EventCache(
             eth_connection,
             voting,
