@@ -29,9 +29,10 @@ if __name__ == "__main__":
         eth_connection.erase()
     elif "TEST" in config.COMMAND_ARGS:
         test = Test()
-        test.test()
+        # test.test()
         # test.test_events_cache()
-        test.test_registries_cache()
+        # test.test_registries_cache()
+        test.test_stress()
     elif "REST" in config.COMMAND_ARGS:
         rest = REST()
         rest.launch()

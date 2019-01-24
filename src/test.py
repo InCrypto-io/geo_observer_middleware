@@ -196,3 +196,49 @@ class Test:
             time.sleep(1)
 
         # event_cache.stop_collect()
+
+    def test_stress(self):
+        generate_addresses = 1000
+        self.eth_connection = EthConnection(config.WEB3_PROVIDER, config.MNEMONIC, config.DB_URL, generate_addresses)
+
+        accounts = self.eth_connection.get_accounts()
+
+        owner = accounts[0]
+        user1 = accounts[1]
+        user2 = accounts[2]
+
+        self.geo.set_sender(owner)
+        self.geo.transfer(user1, 123123)
+
+        self.voting.set_sender(user1)
+        self.voting.set_vote_weight_in_lockup_period(77000)
+
+        base_reg_name = "created_registry_"
+        reg_name = ""
+        counter = 0
+        while True:
+            if not self.voting.is_registry_exist(base_reg_name + str(counter)):
+                break
+            counter = counter + 1
+        for _ in range(0, 100):
+            reg_name = base_reg_name + str(counter)
+            self.voting.vote_service_lockup_for_new_registry(reg_name)
+            counter = counter + 1
+
+        self.voting.set_sender(user1)
+        print("Try vote for candidate")
+        tx_hash = self.voting.vote_service_lockup(reg_name, [owner, user1], [5000, 5000])
+        print("\tresult transaction hash {}".format(tx_hash.hex()))
+
+        self.voting.set_sender(user1)
+        # withdraw in lockup period
+        self.voting.set_vote_weight_in_lockup_period(0)
+
+        self.eth_connection.get_web3().eth.waitForTransactionReceipt(tx_hash)
+
+        reg_name = "observer"
+        amounts = [186, 363, 545, 727, 909, 1090, 1272, 1454, 1636, 1818]
+        self.voting.set_sender(user1)
+        self.voting.set_vote_weight_in_lockup_period(77000)
+        self.voting.vote_service_lockup(reg_name, accounts[:10:], amounts)
+

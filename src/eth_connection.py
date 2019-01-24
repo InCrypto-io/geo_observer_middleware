@@ -6,7 +6,7 @@ import time
 
 
 class EthConnection:
-    def __init__(self, provider, mnemonic, db_url):
+    def __init__(self, provider, mnemonic, db_url, generate_addresses=10):
         self.provider = provider
         print("selected provider is {}".format(self.provider))
 
@@ -26,13 +26,14 @@ class EthConnection:
                 master_key = HDPrivateKey.master_key_from_mnemonic(mnemonic)
                 root_keys = HDKey.from_path(master_key, "m/44'/60'/0'/0")
                 acct_priv_key = root_keys[-1]
-                for i in range(0, 10):
+                for i in range(0, generate_addresses):
                     keys = HDKey.from_path(acct_priv_key, str(i))
                     priv_key = keys[-1]
                     pub_key = priv_key.public_key
                     address = pub_key.address()
                     self.accounts.append(self.get_web3().toChecksumAddress(address))
                     self.private_keys.append("0x" + priv_key._key.to_hex())
+                    print(i, "address", self.get_web3().toChecksumAddress(address))
             except Exception:
                 self.accounts = []
 
@@ -53,19 +54,12 @@ class EthConnection:
         return self.get_web3().eth.accounts
 
     def get_nonce(self, address):
-        if address in self.nonces.keys():
-            nonce = self.nonces[address]
-            self.nonces[address] = self.nonces[address] + 1
-            return nonce
         last_stored_nonce = self.get_last_stored_nonce(address)
         transaction_count = self.get_web3().eth.getTransactionCount(address, "pending")
         if last_stored_nonce + 1 > transaction_count:
-            nonce = last_stored_nonce
-            self.nonces[address] = last_stored_nonce + 1
+            return last_stored_nonce + 1
         else:
-            nonce = transaction_count
-            self.nonces[address] = transaction_count
-        return nonce
+            return transaction_count
 
     def sign_and_send_transaction(self, address, raw_transaction):
         assert address in self.get_accounts()
