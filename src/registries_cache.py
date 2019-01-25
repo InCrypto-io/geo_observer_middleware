@@ -3,8 +3,7 @@ from pymongo import MongoClient
 
 
 class RegistriesCache:
-    def __init__(self, event_cache, voting_created_at_block, db_url, interval_for_preprocessed_blocks,
-                 interval_for_finalization_epoch, settings,
+    def __init__(self, event_cache, voting_created_at_block, db_url, interval_for_preprocessed_blocks, settings,
                  votes_round_to_number_of_digit, voting_creation_timestamp):
         self.event_cache = event_cache
         self.voting_created_at_block = voting_created_at_block
@@ -12,7 +11,6 @@ class RegistriesCache:
         self.votes_round_to_number_of_digit = votes_round_to_number_of_digit
         self.voting_creation_timestamp = voting_creation_timestamp
         self.interval_for_preprocessed_blocks = interval_for_preprocessed_blocks
-        self.interval_for_finalization_epoch = interval_for_finalization_epoch
         self.voting_created_at_block = voting_created_at_block
 
         self.collection_name_prefix = "registry_"
@@ -21,7 +19,6 @@ class RegistriesCache:
         self.db = self.client['db_geo_registries']
 
     def update(self):
-        last_processed_block_number = self.get_last_preprocessed_block_number()
         try:
             available_block_timestamp = self.event_cache.get_timestamp_for_block_number(
                 self.event_cache.get_last_processed_block_number())
@@ -29,18 +26,17 @@ class RegistriesCache:
             available_block_timestamp = 0
         try:
             last_processed_block_timestamp = self.event_cache.get_timestamp_for_block_number(
-                last_processed_block_number)
+                self.get_last_preprocessed_block_number())
         except KeyError:
-            last_processed_block_timestamp = 0
+            last_processed_block_timestamp = self.voting_creation_timestamp
 
-        while last_processed_block_timestamp + self.interval_for_finalization_epoch < available_block_timestamp\
-                and last_processed_block_number < self.event_cache.get_last_processed_block_number():
-            self.__preprocess_block(last_processed_block_number + self.interval_for_preprocessed_blocks)
-            last_processed_block_number = last_processed_block_number + self.interval_for_preprocessed_blocks
-            self.__set_last_preprocessed_block_number(last_processed_block_number)
+        while last_processed_block_timestamp + self.interval_for_preprocessed_blocks < available_block_timestamp \
+                and self.get_last_preprocessed_block_number() < self.event_cache.get_last_processed_block_number():
+            self.__preprocess_block(self.get_last_preprocessed_block_number() + 1)
+            self.__set_last_preprocessed_block_number(self.get_last_preprocessed_block_number())
             try:
                 last_processed_block_timestamp = self.event_cache.get_timestamp_for_block_number(
-                    last_processed_block_number)
+                    self.get_last_preprocessed_block_number())
             except KeyError:
                 break
 
