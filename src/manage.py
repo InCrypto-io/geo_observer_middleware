@@ -23,7 +23,8 @@ if __name__ == "__main__":
             settings)
         registries_cache = RegistriesCache(event_cache, config.VOTING_CREATED_AT_BLOCK, config.DB_URL,
                                            config.INTERVAL_FOR_PREPROCESSED_BLOCKS, settings,
-                                           config.VOTES_ROUND_TO_NUMBER_OF_DIGIT)
+                                           config.VOTES_ROUND_TO_NUMBER_OF_DIGIT,
+                                           voting.creation_timestamp)
         event_cache.erase_all(0)
         registries_cache.erase(0)
         eth_connection.erase()

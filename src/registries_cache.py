@@ -4,11 +4,12 @@ from pymongo import MongoClient
 
 class RegistriesCache:
     def __init__(self, event_cache, voting_created_at_block, db_url, interval_for_preprocessed_blocks, settings,
-                 votes_round_to_number_of_digit):
+                 votes_round_to_number_of_digit, voting_creation_timestamp):
         self.event_cache = event_cache
         self.voting_created_at_block = voting_created_at_block
         self.settings = settings
         self.votes_round_to_number_of_digit = votes_round_to_number_of_digit
+        self.voting_creation_timestamp = voting_creation_timestamp
 
         self.collection_name_prefix = "registry_"
         self.interval_for_preprocessed_blocks = interval_for_preprocessed_blocks
@@ -18,8 +19,7 @@ class RegistriesCache:
 
     def update(self):
 
-        # timestamp
-        assert False
+        # self.voting_creation_timestamp
 
         last_processed_block_number = self.get_last_preprocessed_block_number()
         if self.event_cache.get_last_processed_block_number() < self.voting_created_at_block:

@@ -39,11 +39,11 @@ class REST:
             config.CONFIRMATION_COUNT,
             settings)
 
-        print("self.voting.creation_timestamp", self.voting.creation_timestamp)
         self.registries_cache = RegistriesCache(self.event_cache, config.VOTING_CREATED_AT_BLOCK,
                                                 config.DB_URL,
                                                 config.INTERVAL_FOR_PREPROCESSED_BLOCKS, settings,
-                                                config.VOTES_ROUND_TO_NUMBER_OF_DIGIT)
+                                                config.VOTES_ROUND_TO_NUMBER_OF_DIGIT,
+                                                self.voting.creation_timestamp)
 
         self.allow_process_events = False
 

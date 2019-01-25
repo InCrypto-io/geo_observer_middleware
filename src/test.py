@@ -161,7 +161,8 @@ class Test:
 
         registries_cache = RegistriesCache(event_cache, config.VOTING_CREATED_AT_BLOCK, config.DB_URL,
                                            config.INTERVAL_FOR_PREPROCESSED_BLOCKS, settings,
-                                           config.VOTES_ROUND_TO_NUMBER_OF_DIGIT)
+                                           config.VOTES_ROUND_TO_NUMBER_OF_DIGIT,
+                                           self.voting.creation_timestamp)
 
         # registries_cache.erase(config.VOTING_CREATED_AT_BLOCK + 20)
 
