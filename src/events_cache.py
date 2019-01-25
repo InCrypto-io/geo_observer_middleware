@@ -19,6 +19,7 @@ class EventCache:
             ("blockNumber", pymongo.ASCENDING),
             ("logIndex", pymongo.ASCENDING)
         ], unique=True)
+        self.blocks_collection = self.db["blocks"]
         self.stop_collect_events = True
         self.settings = settings
         self.voting_created_at_block = voting_created_at_block
@@ -40,12 +41,13 @@ class EventCache:
                     last_block_number = self.connection.get_web3().eth.blockNumber
                     print("exist new block", last_block_number)
                     while self.get_last_processed_block_number() + self.confirmation_count < last_block_number:
+                        current_block_number = self.get_last_processed_block_number() + 1
+                        block = self.connection.get_web3().eth.getBlock(current_block_number)
+                        self.write_block(block)
                         for event_name in self.voting.get_events_list():
-                            current_block_number = self.get_last_processed_block_number() + 1
                             event_filter = self.voting.contract.eventFilter(event_name,
                                                                             {'fromBlock': current_block_number,
                                                                              'toBlock': current_block_number})
-                            block = self.connection.get_web3().eth.getBlock(current_block_number)
                             for event in event_filter.get_all_entries():
                                 self.write_event(event, block["timestamp"])
                             self.connection.get_web3().eth.uninstallFilter(event_filter.filter_id)
@@ -64,7 +66,7 @@ class EventCache:
 
     def write_event(self, event, timestamp):
         for f in ["event", "logIndex", "transactionIndex", "transactionHash", "address", "blockHash", "blockNumber"]:
-            if f not in event:
+            if f not in event.keys():
                 print(event)
                 print("Event not contains expected fields")
                 break
@@ -77,6 +79,21 @@ class EventCache:
             data[key] = event["args"][key]
         data["timestamp"] = timestamp
 
+        try:
+            self.events_collection.insert_one(data)
+        except pymongo.errors.DuplicateKeyError:
+            pass
+
+    def write_block(self, block):
+        for f in ["number", "timestamp"]:
+            if f not in block.keys():
+                print(block)
+                print("block not contains expected fields")
+                break
+        data = {
+            "number": block["number"],
+            "timestamp": block["timestamp"]
+        }
         try:
             self.events_collection.insert_one(data)
         except pymongo.errors.DuplicateKeyError:
@@ -118,3 +135,9 @@ class EventCache:
 
     def set_last_processed_block_number(self, value):
         self.settings.set_value("last_processed_in_block_number_for_event", value)
+
+    def get_timestamp_for_block_number(self, number):
+        cursor = self.events_collection.find_one({"blockNumber": number})
+        if not cursor:
+            raise KeyError
+        return cursor["timestamp"]
