@@ -56,7 +56,7 @@ class EthConnection:
     def get_nonce(self, address):
         last_stored_nonce = self.get_last_stored_nonce(address)
         transaction_count = self.get_web3().eth.getTransactionCount(address, "pending")
-        if last_stored_nonce + 1 > transaction_count:
+        if last_stored_nonce > transaction_count:
             return last_stored_nonce + 1
         else:
             return transaction_count
