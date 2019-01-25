@@ -95,7 +95,7 @@ class EventCache:
             "timestamp": block["timestamp"]
         }
         try:
-            self.events_collection.insert_one(data)
+            self.blocks_collection.insert_one(data)
         except pymongo.errors.DuplicateKeyError:
             pass
 

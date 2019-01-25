@@ -21,17 +21,28 @@ class RegistriesCache:
         self.db = self.client['db_geo_registries']
 
     def update(self):
-
-        # self.voting_creation_timestamp
-
         last_processed_block_number = self.get_last_preprocessed_block_number()
-        if self.event_cache.get_last_processed_block_number() < self.voting_created_at_block:
-            return
-        while last_processed_block_number + self.interval_for_preprocessed_blocks \
-                < self.event_cache.get_last_processed_block_number():
+        try:
+            available_block_timestamp = self.event_cache.get_timestamp_for_block_number(
+                self.event_cache.get_last_processed_block_number())
+        except KeyError:
+            available_block_timestamp = 0
+        try:
+            last_processed_block_timestamp = self.event_cache.get_timestamp_for_block_number(
+                last_processed_block_number)
+        except KeyError:
+            last_processed_block_timestamp = 0
+
+        while last_processed_block_timestamp + self.interval_for_finalization_epoch < available_block_timestamp\
+                and last_processed_block_number < self.event_cache.get_last_processed_block_number():
             self.__preprocess_block(last_processed_block_number + self.interval_for_preprocessed_blocks)
             last_processed_block_number = last_processed_block_number + self.interval_for_preprocessed_blocks
             self.__set_last_preprocessed_block_number(last_processed_block_number)
+            try:
+                last_processed_block_timestamp = self.event_cache.get_timestamp_for_block_number(
+                    last_processed_block_number)
+            except KeyError:
+                break
 
     def __preprocess_block(self, block_number, save_to_db=True):
         print("__preprocess_block", block_number)
@@ -235,7 +246,7 @@ class RegistriesCache:
         previous_block = self.voting_created_at_block
         if block_number >= self.voting_created_at_block + self.interval_for_preprocessed_blocks + 1:
             previous_block = (((
-                                           block_number - self.voting_created_at_block) // self.interval_for_preprocessed_blocks - 1)
+                                       block_number - self.voting_created_at_block) // self.interval_for_preprocessed_blocks - 1)
                               * self.interval_for_preprocessed_blocks) \
                              + self.voting_created_at_block
         return previous_block
