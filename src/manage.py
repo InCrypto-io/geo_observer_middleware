@@ -22,7 +22,9 @@ if __name__ == "__main__":
             config.CONFIRMATION_COUNT,
             settings)
         registries_cache = RegistriesCache(event_cache, config.VOTING_CREATED_AT_BLOCK, config.DB_URL,
-                                           config.INTERVAL_FOR_PREPROCESSED_BLOCKS, settings,
+                                           config.INTERVAL_FOR_PREPROCESSED_BLOCKS,
+                                           config.INTERVAL_FOR_FINALIZATION_EPOCH,
+                                           settings,
                                            config.VOTES_ROUND_TO_NUMBER_OF_DIGIT,
                                            voting.creation_timestamp)
         event_cache.erase_all(0)

@@ -3,16 +3,19 @@ from pymongo import MongoClient
 
 
 class RegistriesCache:
-    def __init__(self, event_cache, voting_created_at_block, db_url, interval_for_preprocessed_blocks, settings,
+    def __init__(self, event_cache, voting_created_at_block, db_url, interval_for_preprocessed_blocks,
+                 interval_for_finalization_epoch, settings,
                  votes_round_to_number_of_digit, voting_creation_timestamp):
         self.event_cache = event_cache
         self.voting_created_at_block = voting_created_at_block
         self.settings = settings
         self.votes_round_to_number_of_digit = votes_round_to_number_of_digit
         self.voting_creation_timestamp = voting_creation_timestamp
+        self.interval_for_preprocessed_blocks = interval_for_preprocessed_blocks
+        self.interval_for_finalization_epoch = interval_for_finalization_epoch
+        self.voting_created_at_block = voting_created_at_block
 
         self.collection_name_prefix = "registry_"
-        self.interval_for_preprocessed_blocks = interval_for_preprocessed_blocks
 
         self.client = MongoClient(db_url)
         self.db = self.client['db_geo_registries']
@@ -231,7 +234,8 @@ class RegistriesCache:
     def __determine_previous_preprocessed_block(self, block_number):
         previous_block = self.voting_created_at_block
         if block_number >= self.voting_created_at_block + self.interval_for_preprocessed_blocks + 1:
-            previous_block = (((block_number - self.voting_created_at_block) // self.interval_for_preprocessed_blocks - 1)
+            previous_block = (((
+                                           block_number - self.voting_created_at_block) // self.interval_for_preprocessed_blocks - 1)
                               * self.interval_for_preprocessed_blocks) \
                              + self.voting_created_at_block
         return previous_block
