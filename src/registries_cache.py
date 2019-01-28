@@ -30,6 +30,8 @@ class RegistriesCache:
         except KeyError:
             last_processed_block_timestamp = self.voting_creation_timestamp
 
+        last_epoch = self.get_last_preprocessed_epoch_number()
+
         while last_processed_block_timestamp + self.interval_for_preprocessed_blocks < available_block_timestamp \
                 and self.get_last_preprocessed_block_number() < self.event_cache.get_last_processed_block_number():
             self.__preprocess_block(self.get_last_preprocessed_block_number() + 1)
@@ -258,6 +260,15 @@ class RegistriesCache:
 
     def __set_last_preprocessed_block_number(self, value):
         self.settings.set_value("last_preprocessed_block_number", value)
+
+    def get_last_preprocessed_epoch_number(self):
+        result = self.settings.get_value("last_preprocessed_epoch_number")
+        if not result:
+            result = 0
+        return result
+
+    def __set_last_preprocessed_epoch_number(self, value):
+        self.settings.set_value("last_preprocessed_epoch_number", value)
 
     def get_time_of_start_epoch(self, epoch_number):
         return self.voting_creation_timestamp + epoch_number * self.interval_for_preprocessed_blocks
