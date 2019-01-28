@@ -145,14 +145,14 @@ class EventCache:
         self.settings.set_value("last_processed_in_block_number_for_event", value)
 
     def get_timestamp_for_block_number(self, number):
-        cursor = self.events_collection.find_one({"blockNumber": number})
+        cursor = self.blocks_collection.find_one({"number": number})
         if not cursor:
             raise KeyError
         return cursor["timestamp"]
 
     def get_first_block_number_after_timestamp(self, timestamp):
-        cursor = self.events_collection.find({"timestamp":  {'$gte': timestamp}})\
-            .sort([("blockNumber", pymongo.ASCENDING)]).limit(1)
+        cursor = self.blocks_collection.find({"timestamp":  {'$gte': timestamp}})\
+            .sort([("number", pymongo.ASCENDING)]).limit(1)
         if not cursor or cursor.count() == 0:
             raise KeyError
-        return cursor[0]["blockNumber"]
+        return cursor[0]["number"]

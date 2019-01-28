@@ -24,23 +24,21 @@ class RegistriesCache:
                 self.event_cache.get_last_processed_block_number())
         except KeyError:
             available_block_timestamp = 0
-        try:
-            last_processed_block_timestamp = self.event_cache.get_timestamp_for_block_number(
-                self.get_last_preprocessed_block_number())
-        except KeyError:
-            last_processed_block_timestamp = self.voting_creation_timestamp
 
-        last_epoch = self.get_last_preprocessed_epoch_number()
-
-        while last_processed_block_timestamp + self.interval_for_preprocessed_blocks < available_block_timestamp \
-                and self.get_last_preprocessed_block_number() < self.event_cache.get_last_processed_block_number():
-            self.__preprocess_block(self.get_last_preprocessed_block_number() + 1)
-            self.__set_last_preprocessed_block_number(self.get_last_preprocessed_block_number() + 1)
-            try:
-                last_processed_block_timestamp = self.event_cache.get_timestamp_for_block_number(
-                    self.get_last_preprocessed_block_number())
-            except KeyError:
+        while self.get_last_preprocessed_block_number() < self.event_cache.get_last_processed_block_number():
+            last_epoch = self.get_last_preprocessed_epoch_number()
+            next_epoch = last_epoch + 1
+            new_epoch_start_time = self.get_time_of_start_epoch(next_epoch)
+            if new_epoch_start_time > available_block_timestamp:
                 break
+            try:
+                new_last_block = self.get_number_of_first_block_for_epoch(next_epoch) - 1
+            except (AssertionError, KeyError):
+                break
+            assert self.get_last_preprocessed_block_number() < new_last_block
+            self.__preprocess_block(new_last_block)
+            self.__set_last_preprocessed_block_number(new_last_block)
+            self.__set_last_preprocessed_epoch_number(next_epoch)
 
     def __preprocess_block(self, block_number, save_to_db=True):
         print("__preprocess_block", block_number)
