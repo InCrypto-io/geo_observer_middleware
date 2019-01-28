@@ -277,3 +277,7 @@ class RegistriesCache:
         assert self.event_cache.get_last_processed_block_number() <= block_number, "block number not processed"
         time_stamp = self.event_cache.get_timestamp_for_block_number(block_number)
         return (time_stamp - self.voting_creation_timestamp) // self.interval_for_preprocessed_blocks
+
+    def get_last_block_number_of_previous_epoch(self, block_number):
+        epoch_number = self.get_epoch_number_for_block_number(block_number)
+        return self.get_number_of_first_block_for_epoch(epoch_number) - 1
