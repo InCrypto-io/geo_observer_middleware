@@ -267,6 +267,7 @@ class RegistriesCache:
         return self.event_cache.get_first_block_number_after_timestamp(time_stamp)
 
     def get_epoch_number_for_block_number(self, block_number):
-        assert self.voting_created_at_block <= block_number
+        assert self.voting_created_at_block <= block_number, "block number less creation block number"
+        assert self.event_cache.get_last_processed_block_number() <= block_number, "block number not processed"
         time_stamp = self.event_cache.get_timestamp_for_block_number(block_number)
         return (time_stamp - self.voting_creation_timestamp) // self.interval_for_preprocessed_blocks
