@@ -7,10 +7,10 @@ import websockets
 
 
 class EventCache:
-    def __init__(self, connection, voting, voting_created_at_block, db_url, confirmation_count, settings):
+    def __init__(self, connection, voting, voting_created_at_block, db_url, confirmation_time, settings):
         self.connection = connection
         self.voting = voting
-        self.confirmation_count = confirmation_count
+        self.confirmation_time = confirmation_time
         self.client = MongoClient(db_url)
         self.db = self.client['db_geo_events']
         self.events_collection = self.db["events"]
@@ -35,14 +35,22 @@ class EventCache:
     def process_events(self):
         self.connection.wait_stable_connection()
         new_block_filter = self.connection.get_web3().eth.filter('latest')
+        last_checked_block_number = 0
         while not self.stop_collect_events:
             try:
                 for _ in new_block_filter.get_new_entries():
                     last_block_number = self.connection.get_web3().eth.blockNumber
-                    print("exist new block", last_block_number)
-                    while self.get_last_processed_block_number() + self.confirmation_count < last_block_number:
+                    if last_checked_block_number == last_block_number:
+                        break
+                    else:
+                        last_checked_block_number = last_block_number
+                        last_block = self.connection.get_web3().eth.getBlock(last_checked_block_number)
+                        last_checked_block_timestamp = last_block["timestamp"]
+                    while (self.get_last_processed_block_number() + 1) <= last_block_number:
                         current_block_number = self.get_last_processed_block_number() + 1
                         block = self.connection.get_web3().eth.getBlock(current_block_number)
+                        if block["timestamp"] + self.confirmation_time > last_checked_block_timestamp:
+                            break
                         self.write_block(block)
                         for event_name in self.voting.get_events_list():
                             event_filter = self.voting.contract.eventFilter(event_name,

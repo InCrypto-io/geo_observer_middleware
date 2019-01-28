@@ -23,7 +23,6 @@ if __name__ == "__main__":
             settings)
         registries_cache = RegistriesCache(event_cache, config.VOTING_CREATED_AT_BLOCK, config.DB_URL,
                                            config.INTERVAL_FOR_PREPROCESSED_BLOCKS,
-                                           config.INTERVAL_FOR_FINALIZATION_EPOCH,
                                            settings,
                                            config.VOTES_ROUND_TO_NUMBER_OF_DIGIT,
                                            voting.creation_timestamp)

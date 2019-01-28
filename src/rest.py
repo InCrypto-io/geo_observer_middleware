@@ -42,7 +42,6 @@ class REST:
         self.registries_cache = RegistriesCache(self.event_cache, config.VOTING_CREATED_AT_BLOCK,
                                                 config.DB_URL,
                                                 config.INTERVAL_FOR_PREPROCESSED_BLOCKS,
-                                                config.INTERVAL_FOR_FINALIZATION_EPOCH,
                                                 settings, config.VOTES_ROUND_TO_NUMBER_OF_DIGIT,
                                                 self.voting.creation_timestamp)
 
