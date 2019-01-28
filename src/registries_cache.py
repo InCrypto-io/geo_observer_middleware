@@ -247,9 +247,6 @@ class RegistriesCache:
                              + self.voting_created_at_block
         return previous_block
 
-    def __determine_is_preprocessed_block(self, block_number):
-        return ((block_number - self.voting_created_at_block) % self.interval_for_preprocessed_blocks) == 0
-
     def get_last_preprocessed_block_number(self):
         result = self.settings.get_value("last_preprocessed_block_number")
         if not result:
