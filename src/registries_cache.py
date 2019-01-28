@@ -258,3 +258,15 @@ class RegistriesCache:
 
     def __set_last_preprocessed_block_number(self, value):
         self.settings.set_value("last_preprocessed_block_number", value)
+
+    def get_time_of_start_epoch(self, epoch_number):
+        return self.voting_creation_timestamp + epoch_number * self.interval_for_preprocessed_blocks
+
+    def get_number_of_first_block_for_epoch(self, epoch_number):
+        time_stamp = self.get_time_of_start_epoch(epoch_number)
+        return self.event_cache.get_first_block_number_after_timestamp(time_stamp)
+
+    def get_epoch_number_for_block_number(self, block_number):
+        assert self.voting_created_at_block <= block_number
+        time_stamp = self.event_cache.get_timestamp_for_block_number(block_number)
+        return (time_stamp - self.voting_creation_timestamp) // self.interval_for_preprocessed_blocks

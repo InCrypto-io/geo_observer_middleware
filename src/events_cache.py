@@ -149,3 +149,10 @@ class EventCache:
         if not cursor:
             raise KeyError
         return cursor["timestamp"]
+
+    def get_first_block_number_after_timestamp(self, timestamp):
+        cursor = self.events_collection.find({"timestamp":  {'$gte': timestamp}})\
+            .sort([("blockNumber", pymongo.ASCENDING)]).limit(1)
+        if not cursor:
+            raise KeyError
+        return cursor["blockNumber"]
