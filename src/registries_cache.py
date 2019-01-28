@@ -33,7 +33,7 @@ class RegistriesCache:
         while last_processed_block_timestamp + self.interval_for_preprocessed_blocks < available_block_timestamp \
                 and self.get_last_preprocessed_block_number() < self.event_cache.get_last_processed_block_number():
             self.__preprocess_block(self.get_last_preprocessed_block_number() + 1)
-            self.__set_last_preprocessed_block_number(self.get_last_preprocessed_block_number())
+            self.__set_last_preprocessed_block_number(self.get_last_preprocessed_block_number() + 1)
             try:
                 last_processed_block_timestamp = self.event_cache.get_timestamp_for_block_number(
                     self.get_last_preprocessed_block_number())
