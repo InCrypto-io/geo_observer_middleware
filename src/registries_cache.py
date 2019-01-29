@@ -58,6 +58,9 @@ class RegistriesCache:
         if previous_block > self.voting_created_at_block:
             self.__load_from_db(votes, weights, registries, winners, previous_block)
 
+        if previous_block == block_number:
+            return votes, weights, registries, winners
+
         winners = {}
         self.__apply_events(votes, weights, registries, winners, previous_block, block_number)
 
@@ -239,13 +242,15 @@ class RegistriesCache:
         return 0
 
     def __determine_previous_preprocessed_block(self, block_number):
-        previous_block = self.voting_created_at_block
-        if block_number >= self.voting_created_at_block + self.interval_for_preprocessed_blocks + 1:
-            previous_block = (((
-                                       block_number - self.voting_created_at_block) // self.interval_for_preprocessed_blocks - 1)
-                              * self.interval_for_preprocessed_blocks) \
-                             + self.voting_created_at_block
-        return previous_block
+        try:
+            epoch_number = self.get_epoch_number_for_block_number(block_number)
+            if epoch_number < self.get_last_preprocessed_epoch_number():
+                end_of_epoch = self.get_number_of_first_block_for_epoch(epoch_number + 1) - 1
+                if block_number == end_of_epoch:
+                    return block_number
+            return self.get_last_block_number_of_previous_epoch(block_number)
+        except AssertionError:
+            return self.voting_created_at_block
 
     def get_last_preprocessed_block_number(self):
         result = self.settings.get_value("last_preprocessed_block_number")
