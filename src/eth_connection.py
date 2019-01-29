@@ -3,6 +3,7 @@ from libs.ethBIP44.ethLib import HDPrivateKey, HDKey
 import pymongo
 from pymongo import MongoClient
 import time
+from web3.middleware import geth_poa_middleware
 
 
 class EthConnection:
@@ -42,6 +43,7 @@ class EthConnection:
     def init_web3(self):
         try:
             self.w3 = Web3(Web3.WebsocketProvider(self.provider))
+            self.w3.middleware_stack.inject(geth_poa_middleware, layer=0)
         except Exception:
             self.w3 = None
 
