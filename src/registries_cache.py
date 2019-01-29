@@ -3,14 +3,14 @@ from pymongo import MongoClient
 
 
 class RegistriesCache:
-    def __init__(self, event_cache, voting_created_at_block, db_url, interval_for_preprocessed_blocks, settings,
+    def __init__(self, event_cache, voting_created_at_block, db_url, interval_of_epoch, settings,
                  votes_round_to_number_of_digit, voting_creation_timestamp):
         self.event_cache = event_cache
         self.voting_created_at_block = voting_created_at_block
         self.settings = settings
         self.votes_round_to_number_of_digit = votes_round_to_number_of_digit
         self.voting_creation_timestamp = voting_creation_timestamp
-        self.interval_for_preprocessed_blocks = interval_for_preprocessed_blocks
+        self.interval_of_epoch = interval_of_epoch
         self.voting_created_at_block = voting_created_at_block
 
         self.collection_name_prefix = "registry_"
@@ -201,7 +201,7 @@ class RegistriesCache:
         while block_number <= self.get_last_preprocessed_block_number():
             self.__remove_dbs_for_block_number(self.get_last_preprocessed_block_number())
             self.__set_last_preprocessed_block_number(self.get_last_preprocessed_block_number()
-                                                      - self.interval_for_preprocessed_blocks)
+                                                      - self.interval_of_epoch)
 
     def is_registry_exist(self, registry_name, block_number):
         if block_number > self.get_last_preprocessed_block_number():
@@ -271,7 +271,7 @@ class RegistriesCache:
         self.settings.set_value("last_preprocessed_epoch_number", value)
 
     def get_time_of_start_epoch(self, epoch_number):
-        return self.voting_creation_timestamp + epoch_number * self.interval_for_preprocessed_blocks
+        return self.voting_creation_timestamp + epoch_number * self.interval_of_epoch
 
     def get_number_of_first_block_for_epoch(self, epoch_number):
         time_stamp = self.get_time_of_start_epoch(epoch_number)
@@ -281,7 +281,7 @@ class RegistriesCache:
         assert self.voting_created_at_block <= block_number, "block number less creation block number"
         assert self.get_last_preprocessed_block_number() >= block_number, "block number not processed"
         time_stamp = self.event_cache.get_timestamp_for_block_number(block_number)
-        return (time_stamp - self.voting_creation_timestamp) // self.interval_for_preprocessed_blocks
+        return (time_stamp - self.voting_creation_timestamp) // self.interval_of_epoch
 
     def get_last_block_number_of_previous_epoch(self, block_number):
         epoch_number = self.get_epoch_number_for_block_number(block_number)

@@ -9,7 +9,7 @@ Copy and rename `config.example.py` to `config.py`.<br />
 `MNEMONIC` - 12 words for restoring private key<br /> 
 `DB_URL` - URL for mongo db, by default prepared to docker configuration<br /> 
 `CONFIRMATION_COUNT` - the number of blocks, after which it is believed that the chain will not split<br /> 
-`INTERVAL_FOR_PREPROCESSED_BLOCKS` - interval for saving preprocessed state of contract to db<br /> 
+`INTERVAL_OF_EPOCH` - interval for saving preprocessed state of contract to db<br /> 
 `VOTES_ROUND_TO_NUMBER_OF_DIGIT` - the number of real digits to which the fractional part of tokens is rounded<br /> 
 `REST_API_PORT` - port where REST API listening of requests, 
 if you want change it, make it and in `docker-compose.yaml` file<br /> 
