@@ -25,7 +25,7 @@ class REST:
     def __init__(self):
         self.eth_connection = EthConnection(config.WEB3_PROVIDER, config.MNEMONIC, config.DB_URL)
 
-        self.voting = Voting(self.eth_connection, config.VOTING_ADDRESS)
+        self.voting = Voting(self.eth_connection, config.VOTING_ADDRESS, config.VOTING_CREATED_AT_BLOCK)
         self.geo = GEOToken(self.eth_connection, config.GEOTOKEN_ADDRESS)
         self.gsr = GeoServiceRegistry(self.eth_connection, config.GSR_ADDRESS)
 
@@ -41,8 +41,9 @@ class REST:
 
         self.registries_cache = RegistriesCache(self.event_cache, config.VOTING_CREATED_AT_BLOCK,
                                                 config.DB_URL,
-                                                config.INTERVAL_FOR_PREPROCESSED_BLOCKS, settings,
-                                                config.VOTES_ROUND_TO_NUMBER_OF_DIGIT)
+                                                config.INTERVAL_OF_EPOCH,
+                                                settings, config.VOTES_ROUND_TO_NUMBER_OF_DIGIT,
+                                                self.voting.creation_timestamp)
 
         self.allow_process_events = False
 
@@ -51,7 +52,7 @@ class REST:
         return web.Response(text=text)
 
     def get_current_block_number(self, request):
-        text = str(self.registries_cache.get_current_preprocessed_block_number())
+        text = str(self.registries_cache.get_last_preprocessed_block_number())
         return web.Response(text=text)
 
     def get_registries(self, request):
@@ -59,15 +60,16 @@ class REST:
             return web.Response(status=400)
         try:
             block_number = int(request.rel_url.query["blockNumber"])
+            block_number = self.registries_cache.get_last_block_number_of_previous_epoch(block_number)
             if block_number < config.VOTING_CREATED_AT_BLOCK \
-                    or block_number > self.registries_cache.get_current_preprocessed_block_number():
+                    or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
                 "registries": self.registries_cache.get_registry_list(block_number),
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, AssertionError) as e:
             return web.Response(status=400, text=str(e))
 
     def is_registry_exist(self, request):
@@ -78,8 +80,9 @@ class REST:
         try:
             registry_name = str(request.rel_url.query["registryName"])
             block_number = int(request.rel_url.query["blockNumber"])
+            block_number = self.registries_cache.get_last_block_number_of_previous_epoch(block_number)
             if block_number < config.VOTING_CREATED_AT_BLOCK \
-                    or block_number > self.registries_cache.get_current_preprocessed_block_number():
+                    or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
                 "registry": registry_name,
@@ -87,7 +90,7 @@ class REST:
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, AssertionError) as e:
             return web.Response(status=400, text=str(e))
 
     def get_winners_list(self, request):
@@ -98,8 +101,9 @@ class REST:
         try:
             registry_name = str(request.rel_url.query["registryName"])
             block_number = int(request.rel_url.query["blockNumber"])
+            block_number = self.registries_cache.get_last_block_number_of_previous_epoch(block_number)
             if block_number < config.VOTING_CREATED_AT_BLOCK \
-                    or block_number > self.registries_cache.get_current_preprocessed_block_number():
+                    or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
                 "registry": registry_name,
@@ -107,7 +111,7 @@ class REST:
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, AssertionError) as e:
             return web.Response(status=400, text=str(e))
 
     def get_vote_for_candidate(self, request):
@@ -121,8 +125,9 @@ class REST:
             address = str(request.rel_url.query["address"])
             registry_name = str(request.rel_url.query["registryName"])
             block_number = int(request.rel_url.query["blockNumber"])
+            block_number = self.registries_cache.get_last_block_number_of_previous_epoch(block_number)
             if block_number < config.VOTING_CREATED_AT_BLOCK \
-                    or block_number > self.registries_cache.get_current_preprocessed_block_number():
+                    or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
                 "registry": registry_name,
@@ -131,7 +136,7 @@ class REST:
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, AssertionError) as e:
             return web.Response(status=400, text=str(e))
 
     def get_weight(self, request):
@@ -142,8 +147,9 @@ class REST:
         try:
             address = str(request.rel_url.query["address"])
             block_number = int(request.rel_url.query["blockNumber"])
+            block_number = self.registries_cache.get_last_block_number_of_previous_epoch(block_number)
             if block_number < config.VOTING_CREATED_AT_BLOCK \
-                    or block_number > self.registries_cache.get_current_preprocessed_block_number():
+                    or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
             text = json.dumps({
                 "address": address,
@@ -151,7 +157,7 @@ class REST:
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, AssertionError) as e:
             return web.Response(status=400, text=str(e))
 
     def get_gas_price(self, request):
@@ -668,7 +674,6 @@ class REST:
     def process_events(self):
         while self.allow_process_events:
             self.registries_cache.update()
-            self.registries_cache.update_current_block()
             time.sleep(1)
 
     def launch(self):
@@ -724,6 +729,8 @@ class REST:
 
         self.allow_process_events = True
         self.eth_connection.wait_stable_connection()
+
+        self.event_cache.collect()
 
         worker = Thread(target=self.process_events, daemon=True)
         worker.start()

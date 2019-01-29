@@ -11,7 +11,7 @@ from settings import Settings
 class Test:
     def __init__(self):
         self.eth_connection = EthConnection(config.WEB3_PROVIDER, config.MNEMONIC, config.DB_URL)
-        self.voting = Voting(self.eth_connection, config.VOTING_ADDRESS)
+        self.voting = Voting(self.eth_connection, config.VOTING_ADDRESS, config.VOTING_CREATED_AT_BLOCK)
         self.geo = GEOToken(self.eth_connection, config.GEOTOKEN_ADDRESS)
 
     def test(self):
@@ -115,7 +115,7 @@ class Test:
         tx_hash = self.voting.vote_service_lockup(reg_name, accounts, amounts)
         print("resend, old transaction hash", tx_hash.hex())
         print("transaction with new nonce", self.voting.vote_service_lockup(reg_name, accounts, amounts).hex())
-        tx_hash = self.eth_connection.resend(tx_hash, self.eth_connection.get_gas_price()*2)
+        tx_hash = self.eth_connection.resend(tx_hash, self.eth_connection.get_gas_price() * 2)
         print("resend, new transaction hash", tx_hash.hex())
 
         # event_filter = self.voting.contract.events.Vote.createFilter(fromBlock=0)
@@ -160,8 +160,9 @@ class Test:
         event_cache.collect()
 
         registries_cache = RegistriesCache(event_cache, config.VOTING_CREATED_AT_BLOCK, config.DB_URL,
-                                           config.INTERVAL_FOR_PREPROCESSED_BLOCKS, settings,
-                                           config.VOTES_ROUND_TO_NUMBER_OF_DIGIT)
+                                           config.INTERVAL_OF_EPOCH, settings,
+                                           config.VOTES_ROUND_TO_NUMBER_OF_DIGIT,
+                                           self.voting.creation_timestamp)
 
         # registries_cache.erase(config.VOTING_CREATED_AT_BLOCK + 20)
 
@@ -176,7 +177,6 @@ class Test:
 
         while True:
             registries_cache.update()
-            registries_cache.update_current_block()
             # print("get_winners_list",
             #       registries_cache.get_winners_list("provider", config.VOTING_CREATED_AT_BLOCK + 20))
             #
@@ -241,4 +241,3 @@ class Test:
         self.voting.set_sender(user1)
         self.voting.set_vote_weight_in_lockup_period(77000)
         self.voting.vote_service_lockup(reg_name, accounts[:10:], amounts)
-

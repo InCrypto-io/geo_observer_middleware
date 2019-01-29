@@ -3,43 +3,42 @@ from pymongo import MongoClient
 
 
 class RegistriesCache:
-    def __init__(self, event_cache, voting_created_at_block, db_url, interval_for_preprocessed_blocks, settings,
-                 votes_round_to_number_of_digit):
+    def __init__(self, event_cache, voting_created_at_block, db_url, interval_of_epoch, settings,
+                 votes_round_to_number_of_digit, voting_creation_timestamp):
         self.event_cache = event_cache
         self.voting_created_at_block = voting_created_at_block
         self.settings = settings
         self.votes_round_to_number_of_digit = votes_round_to_number_of_digit
+        self.voting_creation_timestamp = voting_creation_timestamp
+        self.interval_of_epoch = interval_of_epoch
+        self.voting_created_at_block = voting_created_at_block
 
         self.collection_name_prefix = "registry_"
-        self.interval_for_preprocessed_blocks = interval_for_preprocessed_blocks
 
         self.client = MongoClient(db_url)
         self.db = self.client['db_geo_registries']
 
     def update(self):
-        last_processed_block_number = self.__get_last_preprocessed_block_number()
-        if self.event_cache.get_last_processed_block_number() < self.voting_created_at_block:
-            return
-        while last_processed_block_number + self.interval_for_preprocessed_blocks \
-                < self.event_cache.get_last_processed_block_number():
-            self.__preprocess_block(last_processed_block_number + self.interval_for_preprocessed_blocks)
-            last_processed_block_number = last_processed_block_number + self.interval_for_preprocessed_blocks
-            self.__set_last_preprocessed_block_number(last_processed_block_number)
+        try:
+            available_block_timestamp = self.event_cache.get_timestamp_for_block_number(
+                self.event_cache.get_last_processed_block_number())
+        except KeyError:
+            available_block_timestamp = 0
 
-    def update_current_block(self):
-        current_preprocessed_block_number = self.get_current_preprocessed_block_number()
-        if self.event_cache.get_last_processed_block_number() < self.voting_created_at_block:
-            return
-        if self.event_cache.get_last_processed_block_number() > \
-                self.__get_last_preprocessed_block_number() + self.interval_for_preprocessed_blocks:
-            return
-        if current_preprocessed_block_number < self.event_cache.get_last_processed_block_number():
-            if current_preprocessed_block_number != self.__determine_previous_preprocessed_block(
-                    self.event_cache.get_last_processed_block_number()):
-                self.__remove_dbs_for_block_number(current_preprocessed_block_number)
-            if self.event_cache.get_last_processed_block_number() != self.__get_last_preprocessed_block_number():
-                self.__preprocess_block(self.event_cache.get_last_processed_block_number())
-            self.__set_current_preprocessed_block_number(self.event_cache.get_last_processed_block_number())
+        while self.get_last_preprocessed_block_number() < self.event_cache.get_last_processed_block_number():
+            last_epoch = self.get_last_preprocessed_epoch_number()
+            next_epoch = last_epoch + 1
+            new_epoch_start_time = self.get_time_of_start_epoch(next_epoch)
+            if new_epoch_start_time > available_block_timestamp:
+                break
+            try:
+                new_last_block = self.get_number_of_first_block_for_epoch(next_epoch) - 1
+            except (AssertionError, KeyError):
+                break
+            assert self.get_last_preprocessed_block_number() < new_last_block
+            self.__preprocess_block(new_last_block)
+            self.__set_last_preprocessed_block_number(new_last_block)
+            self.__set_last_preprocessed_epoch_number(next_epoch)
 
     def __preprocess_block(self, block_number, save_to_db=True):
         print("__preprocess_block", block_number)
@@ -58,6 +57,9 @@ class RegistriesCache:
 
         if previous_block > self.voting_created_at_block:
             self.__load_from_db(votes, weights, registries, winners, previous_block)
+
+        if previous_block == block_number:
+            return votes, weights, registries, winners
 
         winners = {}
         self.__apply_events(votes, weights, registries, winners, previous_block, block_number)
@@ -193,35 +195,28 @@ class RegistriesCache:
     def erase(self, block_number=0):
         if block_number == 0:
             block_number = self.voting_created_at_block
-        if block_number > self.__get_last_preprocessed_block_number():
+        if block_number > self.get_last_preprocessed_block_number():
             return
 
-        if self.get_current_preprocessed_block_number() != self.__get_last_preprocessed_block_number() \
-                and self.get_current_preprocessed_block_number() >= block_number:
-            self.__remove_dbs_for_block_number(self.get_current_preprocessed_block_number())
-            self.__set_current_preprocessed_block_number(self.__get_last_preprocessed_block_number())
-
-        while block_number <= self.__get_last_preprocessed_block_number():
-            self.__remove_dbs_for_block_number(self.__get_last_preprocessed_block_number())
-            self.__set_last_preprocessed_block_number(self.__get_last_preprocessed_block_number()
-                                                      - self.interval_for_preprocessed_blocks)
-
-        self.__set_current_preprocessed_block_number(self.__get_last_preprocessed_block_number())
+        while block_number <= self.get_last_preprocessed_block_number():
+            self.__remove_dbs_for_block_number(self.get_last_preprocessed_block_number())
+            self.__set_last_preprocessed_block_number(self.get_last_preprocessed_block_number()
+                                                      - self.interval_of_epoch)
 
     def is_registry_exist(self, registry_name, block_number):
-        if block_number > self.get_current_preprocessed_block_number():
+        if block_number > self.get_last_preprocessed_block_number():
             return False
         prepared_block_data = self.__preprocess_block(block_number, False)
         return registry_name in prepared_block_data[2]
 
     def get_registry_list(self, block_number):
-        if block_number > self.get_current_preprocessed_block_number():
+        if block_number > self.get_last_preprocessed_block_number():
             return []
         prepared_block_data = self.__preprocess_block(block_number, False)
         return prepared_block_data[2]
 
     def get_total_votes_for_candidate(self, candidate_address, registry_name, block_number):
-        if block_number > self.get_current_preprocessed_block_number():
+        if block_number > self.get_last_preprocessed_block_number():
             return 0
         winners = self.get_winners_list(registry_name, block_number)
         if len(winners):
@@ -231,7 +226,7 @@ class RegistriesCache:
         return 0
 
     def get_winners_list(self, registry_name, block_number):
-        if block_number > self.get_current_preprocessed_block_number():
+        if block_number > self.get_last_preprocessed_block_number():
             return []
         prepared_block_data = self.__preprocess_block(block_number, False)
         if registry_name in prepared_block_data[3].keys():
@@ -239,7 +234,7 @@ class RegistriesCache:
         return []
 
     def get_weight(self, voter, block_number):
-        if block_number > self.get_current_preprocessed_block_number():
+        if block_number > self.get_last_preprocessed_block_number():
             return []
         prepared_block_data = self.__preprocess_block(block_number, False)
         if voter in prepared_block_data[1].keys():
@@ -247,17 +242,17 @@ class RegistriesCache:
         return 0
 
     def __determine_previous_preprocessed_block(self, block_number):
-        previous_block = self.voting_created_at_block
-        if block_number >= self.voting_created_at_block + self.interval_for_preprocessed_blocks + 1:
-            previous_block = (((block_number - self.voting_created_at_block) // self.interval_for_preprocessed_blocks - 1)
-                              * self.interval_for_preprocessed_blocks) \
-                             + self.voting_created_at_block
-        return previous_block
+        try:
+            epoch_number = self.get_epoch_number_for_block_number(block_number)
+            if epoch_number < self.get_last_preprocessed_epoch_number():
+                end_of_epoch = self.get_number_of_first_block_for_epoch(epoch_number + 1) - 1
+                if block_number == end_of_epoch:
+                    return block_number
+            return self.get_last_block_number_of_previous_epoch(block_number)
+        except AssertionError:
+            return self.voting_created_at_block
 
-    def __determine_is_preprocessed_block(self, block_number):
-        return ((block_number - self.voting_created_at_block) % self.interval_for_preprocessed_blocks) == 0
-
-    def __get_last_preprocessed_block_number(self):
+    def get_last_preprocessed_block_number(self):
         result = self.settings.get_value("last_preprocessed_block_number")
         if not result:
             result = self.voting_created_at_block
@@ -266,11 +261,28 @@ class RegistriesCache:
     def __set_last_preprocessed_block_number(self, value):
         self.settings.set_value("last_preprocessed_block_number", value)
 
-    def get_current_preprocessed_block_number(self):
-        result = self.settings.get_value("current_preprocessed_block_number")
+    def get_last_preprocessed_epoch_number(self):
+        result = self.settings.get_value("last_preprocessed_epoch_number")
         if not result:
             result = 0
         return result
 
-    def __set_current_preprocessed_block_number(self, value):
-        self.settings.set_value("current_preprocessed_block_number", value)
+    def __set_last_preprocessed_epoch_number(self, value):
+        self.settings.set_value("last_preprocessed_epoch_number", value)
+
+    def get_time_of_start_epoch(self, epoch_number):
+        return self.voting_creation_timestamp + epoch_number * self.interval_of_epoch
+
+    def get_number_of_first_block_for_epoch(self, epoch_number):
+        time_stamp = self.get_time_of_start_epoch(epoch_number)
+        return self.event_cache.get_first_block_number_after_timestamp(time_stamp)
+
+    def get_epoch_number_for_block_number(self, block_number):
+        assert self.voting_created_at_block <= block_number, "block number less creation block number"
+        assert self.get_last_preprocessed_block_number() >= block_number, "block number not processed"
+        time_stamp = self.event_cache.get_timestamp_for_block_number(block_number)
+        return (time_stamp - self.voting_creation_timestamp) // self.interval_of_epoch
+
+    def get_last_block_number_of_previous_epoch(self, block_number):
+        epoch_number = self.get_epoch_number_for_block_number(block_number)
+        return self.get_number_of_first_block_for_epoch(epoch_number) - 1

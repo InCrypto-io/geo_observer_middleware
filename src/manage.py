@@ -13,7 +13,7 @@ if __name__ == "__main__":
     if "CLEAR" in sys.argv:
         eth_connection = EthConnection(config.WEB3_PROVIDER, config.MNEMONIC, config.DB_URL)
         settings = Settings(config.DB_URL)
-        voting = Voting(eth_connection, config.VOTING_ADDRESS)
+        voting = Voting(eth_connection, config.VOTING_ADDRESS, config.VOTING_CREATED_AT_BLOCK)
         event_cache = EventCache(
             eth_connection,
             voting,
@@ -22,8 +22,10 @@ if __name__ == "__main__":
             config.CONFIRMATION_COUNT,
             settings)
         registries_cache = RegistriesCache(event_cache, config.VOTING_CREATED_AT_BLOCK, config.DB_URL,
-                                           config.INTERVAL_FOR_PREPROCESSED_BLOCKS, settings,
-                                           config.VOTES_ROUND_TO_NUMBER_OF_DIGIT)
+                                           config.INTERVAL_OF_EPOCH,
+                                           settings,
+                                           config.VOTES_ROUND_TO_NUMBER_OF_DIGIT,
+                                           voting.creation_timestamp)
         event_cache.erase_all(0)
         registries_cache.erase(0)
         eth_connection.erase()

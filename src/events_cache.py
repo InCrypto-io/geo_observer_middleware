@@ -5,11 +5,12 @@ from threading import Thread
 import concurrent.futures
 import websockets
 
+
 class EventCache:
-    def __init__(self, connection, voting, voting_created_at_block, db_url, confirmation_count, settings):
+    def __init__(self, connection, voting, voting_created_at_block, db_url, confirmation_time, settings):
         self.connection = connection
         self.voting = voting
-        self.confirmation_count = confirmation_count
+        self.confirmation_time = confirmation_time
         self.client = MongoClient(db_url)
         self.db = self.client['db_geo_events']
         self.events_collection = self.db["events"]
@@ -18,6 +19,7 @@ class EventCache:
             ("blockNumber", pymongo.ASCENDING),
             ("logIndex", pymongo.ASCENDING)
         ], unique=True)
+        self.blocks_collection = self.db["blocks"]
         self.stop_collect_events = True
         self.settings = settings
         self.voting_created_at_block = voting_created_at_block
@@ -33,19 +35,29 @@ class EventCache:
     def process_events(self):
         self.connection.wait_stable_connection()
         new_block_filter = self.connection.get_web3().eth.filter('latest')
+        last_checked_block_number = 0
         while not self.stop_collect_events:
             try:
                 for _ in new_block_filter.get_new_entries():
                     last_block_number = self.connection.get_web3().eth.blockNumber
-                    print("exist new block", last_block_number)
-                    while self.get_last_processed_block_number() + self.confirmation_count < last_block_number:
-                        print("get events for block:", self.get_last_processed_block_number() + 1)
+                    if last_checked_block_number == last_block_number:
+                        break
+                    else:
+                        last_checked_block_number = last_block_number
+                        last_block = self.connection.get_web3().eth.getBlock(last_checked_block_number)
+                        last_checked_block_timestamp = last_block["timestamp"]
+                    while (self.get_last_processed_block_number() + 1) <= last_block_number:
+                        current_block_number = self.get_last_processed_block_number() + 1
+                        block = self.connection.get_web3().eth.getBlock(current_block_number)
+                        if block["timestamp"] + self.confirmation_time > last_checked_block_timestamp:
+                            break
+                        self.write_block(block)
                         for event_name in self.voting.get_events_list():
                             event_filter = self.voting.contract.eventFilter(event_name,
-                                                                         {'fromBlock': self.get_last_processed_block_number() + 1,
-                                                                          'toBlock': self.get_last_processed_block_number() + 1})
+                                                                            {'fromBlock': current_block_number,
+                                                                             'toBlock': current_block_number})
                             for event in event_filter.get_all_entries():
-                                self.write_event(event)
+                                self.write_event(event, block["timestamp"])
                             self.connection.get_web3().eth.uninstallFilter(event_filter.filter_id)
                         self.set_last_processed_block_number(self.get_last_processed_block_number() + 1)
                 time.sleep(10)
@@ -60,10 +72,10 @@ class EventCache:
     def stop_collect(self):
         self.stop_collect_events = True
 
-    def write_event(self, event):
-        print("write_event", event)
+    def write_event(self, event, timestamp):
         for f in ["event", "logIndex", "transactionIndex", "transactionHash", "address", "blockHash", "blockNumber"]:
-            if f not in event:
+            if f not in event.keys():
+                print(event)
                 print("Event not contains expected fields")
                 break
         data = {}
@@ -73,8 +85,25 @@ class EventCache:
             data[key] = event[key]
         for key in event["args"]:
             data[key] = event["args"][key]
+        data["timestamp"] = timestamp
+
         try:
             self.events_collection.insert_one(data)
+        except pymongo.errors.DuplicateKeyError:
+            pass
+
+    def write_block(self, block):
+        for f in ["number", "timestamp"]:
+            if f not in block.keys():
+                print(block)
+                print("block not contains expected fields")
+                break
+        data = {
+            "number": block["number"],
+            "timestamp": block["timestamp"]
+        }
+        try:
+            self.blocks_collection.insert_one(data)
         except pymongo.errors.DuplicateKeyError:
             pass
 
@@ -114,3 +143,16 @@ class EventCache:
 
     def set_last_processed_block_number(self, value):
         self.settings.set_value("last_processed_in_block_number_for_event", value)
+
+    def get_timestamp_for_block_number(self, number):
+        cursor = self.blocks_collection.find_one({"number": number})
+        if not cursor:
+            raise KeyError
+        return cursor["timestamp"]
+
+    def get_first_block_number_after_timestamp(self, timestamp):
+        cursor = self.blocks_collection.find({"timestamp":  {'$gte': timestamp}})\
+            .sort([("number", pymongo.ASCENDING)]).limit(1)
+        if not cursor or cursor.count() == 0:
+            raise KeyError
+        return cursor[0]["number"]
