@@ -60,6 +60,7 @@ class REST:
             return web.Response(status=400)
         try:
             block_number = int(request.rel_url.query["blockNumber"])
+            block_number = self.registries_cache.get_last_block_number_of_previous_epoch(block_number)
             if block_number < config.VOTING_CREATED_AT_BLOCK \
                     or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
@@ -68,7 +69,7 @@ class REST:
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, AssertionError) as e:
             return web.Response(status=400, text=str(e))
 
     def is_registry_exist(self, request):
@@ -79,6 +80,7 @@ class REST:
         try:
             registry_name = str(request.rel_url.query["registryName"])
             block_number = int(request.rel_url.query["blockNumber"])
+            block_number = self.registries_cache.get_last_block_number_of_previous_epoch(block_number)
             if block_number < config.VOTING_CREATED_AT_BLOCK \
                     or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
@@ -88,7 +90,7 @@ class REST:
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, AssertionError) as e:
             return web.Response(status=400, text=str(e))
 
     def get_winners_list(self, request):
@@ -99,6 +101,7 @@ class REST:
         try:
             registry_name = str(request.rel_url.query["registryName"])
             block_number = int(request.rel_url.query["blockNumber"])
+            block_number = self.registries_cache.get_last_block_number_of_previous_epoch(block_number)
             if block_number < config.VOTING_CREATED_AT_BLOCK \
                     or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
@@ -108,7 +111,7 @@ class REST:
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, AssertionError) as e:
             return web.Response(status=400, text=str(e))
 
     def get_vote_for_candidate(self, request):
@@ -122,6 +125,7 @@ class REST:
             address = str(request.rel_url.query["address"])
             registry_name = str(request.rel_url.query["registryName"])
             block_number = int(request.rel_url.query["blockNumber"])
+            block_number = self.registries_cache.get_last_block_number_of_previous_epoch(block_number)
             if block_number < config.VOTING_CREATED_AT_BLOCK \
                     or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
@@ -132,7 +136,7 @@ class REST:
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, AssertionError) as e:
             return web.Response(status=400, text=str(e))
 
     def get_weight(self, request):
@@ -143,6 +147,7 @@ class REST:
         try:
             address = str(request.rel_url.query["address"])
             block_number = int(request.rel_url.query["blockNumber"])
+            block_number = self.registries_cache.get_last_block_number_of_previous_epoch(block_number)
             if block_number < config.VOTING_CREATED_AT_BLOCK \
                     or block_number > self.registries_cache.get_last_preprocessed_block_number():
                 return web.Response(status=404)
@@ -152,7 +157,7 @@ class REST:
                 "blockNumber": block_number
             })
             return web.Response(text=text)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, AssertionError) as e:
             return web.Response(status=400, text=str(e))
 
     def get_gas_price(self, request):
