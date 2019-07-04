@@ -42,4 +42,4 @@ Change in config file URL to mongo db server <br />
  `python3 ./src/manage.py CLEAN`
 
 # Usage
- Watch https://documenter.getpostman.com/view/5899787/RztfvWwY
+ https://documenter.getpostman.com/view/5899787/S1a1ZoML
