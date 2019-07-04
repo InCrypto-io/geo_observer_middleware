@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "first blcock",
+			"name": "first block",
 			"request": {
 				"method": "GET",
 				"header": [],
